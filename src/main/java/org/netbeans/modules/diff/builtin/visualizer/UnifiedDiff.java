@@ -52,7 +52,7 @@ import java.io.*;
  */
 final class UnifiedDiff {
     
-    private final TextDiffVisualizer.TextDiffInfo diffInfo;
+    private final TextDiffInfo diffInfo;
     private BufferedReader baseReader; 
     private BufferedReader modifiedReader;
     private final String newline;
@@ -62,7 +62,7 @@ final class UnifiedDiff {
     private int   currentBaseLine;
     private int   currentModifiedLine;
 
-    public UnifiedDiff(TextDiffVisualizer.TextDiffInfo diffInfo) {
+    public UnifiedDiff(TextDiffInfo diffInfo) {
         this.diffInfo = diffInfo;
         currentBaseLine = 1;
         currentModifiedLine = 1;

@@ -47,8 +47,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openide.util.NbBundle;
-
 import org.netbeans.api.diff.Difference;
 import org.netbeans.spi.diff.DiffProvider;
 
@@ -73,14 +71,14 @@ public class BuiltInDiffProvider extends DiffProvider implements java.io.Seriali
      * Get the display name of this diff provider.
      */
     public String getDisplayName() {
-        return NbBundle.getMessage(BuiltInDiffProvider.class, "BuiltInDiffProvider.displayName");
+        return Bundle.BuiltInDiffProvider_displayName();
     }
     
     /**
      * Get a short description of this diff provider.
      */
     public String getShortDescription() {
-        return NbBundle.getMessage(BuiltInDiffProvider.class, "BuiltInDiffProvider.shortDescription");
+        return Bundle.BuiltInDiffProvider_shortDescription();
     }
     
     /**

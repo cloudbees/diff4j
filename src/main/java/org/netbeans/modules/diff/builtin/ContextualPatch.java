@@ -40,9 +40,6 @@
  */
 package org.netbeans.modules.diff.builtin;
 
-import org.netbeans.api.queries.FileEncodingQuery;
-import org.openide.filesystems.FileUtil;
-
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;

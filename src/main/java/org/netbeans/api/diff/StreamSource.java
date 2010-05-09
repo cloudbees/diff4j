@@ -115,8 +115,8 @@ public abstract class StreamSource extends Object {
      * Create the default implementation of <code>StreamSource</code>, that has
      * just reader and writer from/to a file.
      */
-    public static StreamSource createSource(String name, String title, String MIMEType, File file) {
-        return new Impl(name, title, MIMEType, file);
+    public static StreamSource createSource(String name, String title, String MIMEType, File file, Charset encoding) {
+        return new Impl(name, title, MIMEType, file, encoding);
     }
     
     /**
@@ -165,19 +165,15 @@ public abstract class StreamSource extends Object {
             tmp = File.createTempFile("sss", "tmp");
             tmp.deleteOnExit();
             tmp.createNewFile();
-            InputStream in = null;
-            OutputStream out = null;
+            Writer out = null;
             try {
                 if (encoding == null) {
-                    in = new ReaderInputStream(r);
+                    out = new FileWriter(tmp);
                 } else {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    copyStreamsCloseAll(new OutputStreamWriter(baos, encoding), r);
-                    in = new ByteArrayInputStream(baos.toByteArray());
+                    out = new OutputStreamWriter(new FileOutputStream(tmp),encoding);
                 }
-                IOUtils.copy(in, out = new FileOutputStream(tmp));
+                IOUtils.copy(r,out);
             } finally {
-                if (in != null) in.close();
                 if (out != null) out.close();
             }
             return tmp;

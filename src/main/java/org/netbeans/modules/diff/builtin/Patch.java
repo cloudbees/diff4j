@@ -257,12 +257,12 @@ public class Patch extends Reader {
      * This method assures, that only '\n' is used as the line ending.
      */
     private String adjustTextNL(String text) {
-        text = org.openide.util.Utilities.replaceString(text, "\r\n", "\n");
-        text = org.openide.util.Utilities.replaceString(text, "\n\r", "\n");
-        text = org.openide.util.Utilities.replaceString(text, "\r", "\n");
+        text = text.replace("\r\n", "\n");
+        text = text.replace("\n\r", "\n");
+        text = text.replace("\r", "\n");
         return text;
     }
-    
+
     private static int numChars(char c, char[] chars) {
         int n = 0;
         for (int i = 0; i < chars.length; i++) {
