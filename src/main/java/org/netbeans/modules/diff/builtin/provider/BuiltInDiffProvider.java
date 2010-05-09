@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.netbeans.api.diff.Difference;
-import org.netbeans.spi.diff.DiffProvider;
+import org.netbeans.api.diff.DiffProvider;
 
 /**
  *
@@ -62,7 +62,7 @@ public class BuiltInDiffProvider extends DiffProvider implements java.io.Seriali
     private boolean trimLines = true;
 
     static final long serialVersionUID = 1L;
-    
+
     /** Creates a new instance of BuiltInDiffProvider */
     public BuiltInDiffProvider() {
     }

@@ -47,8 +47,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 
 import junit.framework.TestCase;
+import org.netbeans.api.diff.DiffProvider;
 import org.netbeans.api.diff.Difference;
-import org.netbeans.spi.diff.DiffProvider;
 
 /**
  * The test of the built-in diff provider

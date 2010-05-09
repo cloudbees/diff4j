@@ -39,7 +39,7 @@
  * made subject to such option by the copyright holder.
  */
 
-package org.netbeans.spi.diff;
+package org.netbeans.api.diff;
 
 import java.io.IOException;
 import java.io.Reader;

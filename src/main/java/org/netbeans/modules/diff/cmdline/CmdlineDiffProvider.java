@@ -48,8 +48,8 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.netbeans.api.diff.DiffProvider;
 import org.netbeans.api.diff.Difference;
-import org.netbeans.spi.diff.DiffProvider;
 
 /**
  * The parser of an external diff utility compatible with Unix diff output.
