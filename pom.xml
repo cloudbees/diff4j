@@ -2,14 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.infradna</groupId>
-  <artifactId>netbeans-diff</artifactId>
+  <artifactId>diff4j</artifactId>
   <version>1.0-SNAPSHOT</version>
+
+  <name>Pure Java implementation of diff/patch</name>
+  <description>Repackaged the code from NetBeans</description>
 
   <dependencies>
     <dependency>
       <groupId>org.jvnet.localizer</groupId>
       <artifactId>localizer</artifactId>
-      <version>1.10</version>
+      <version>1.12</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -17,14 +25,7 @@
       <version>4.5</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>1.4</version>
-    </dependency>
   </dependencies>
-
-  <name>Diff/Patch from NetBeans</name>
 
   <repositories>
     <repository>
@@ -40,7 +41,7 @@
     </repository>
     <site>
       <id>kohsuke.org</id>
-      <url>scp://kohsuke.org/home/kohsuke/kohsuke.org/access-modifier/</url>
+      <url>scp://kohsuke.org/home/kohsuke/kohsuke.org/diff/</url>
     </site>
   </distributionManagement>
 
@@ -96,9 +97,9 @@
     </extensions>
   </build>
  
-  <!--scm>
-    <connection>scm:git:git@github.com:kohsuke/access-modifier.git</connection>
-  </scm-->
+  <scm>
+    <connection>scm:git:git@github.com:infradna/diff4j.git</connection>
+  </scm>
 
   <reporting>
     <plugins>
@@ -111,7 +112,7 @@
 
   <licenses>
     <license>
-      <name>CDDL</name>
+      <name>CDDL/GPLv2 dual license</name>
       <url>http://www.opensource.org/licenses/cddl1.php</url>
       <distribution>repo</distribution>
     </license>
