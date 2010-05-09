@@ -46,8 +46,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+
+import junit.framework.TestCase;
 import org.netbeans.api.diff.Difference;
-import org.netbeans.junit.NbTestCase;
 import org.netbeans.spi.diff.DiffProvider;
 
 /**
@@ -55,7 +56,7 @@ import org.netbeans.spi.diff.DiffProvider;
  *
  * @author Martin Entlicher
  */
-public class BuiltInDiffProviderTest extends NbTestCase {
+public class BuiltInDiffProviderTest extends TestCase {
 
     private static final String[] SIMPLE1 = {
         "Hi",

@@ -52,7 +52,7 @@ import org.netbeans.api.diff.StreamSource;
  *
  * @author Martin Entlicher
  */
-public abstract class DiffViewAbstract extends NbTestCase {
+public abstract class DiffViewAbstract extends TestCase {
     /** the DiffView to work on */
     private DiffView dv;
 

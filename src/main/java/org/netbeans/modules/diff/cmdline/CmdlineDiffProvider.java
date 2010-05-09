@@ -44,17 +44,12 @@ package org.netbeans.modules.diff.cmdline;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
-
 import org.netbeans.api.diff.Difference;
 import org.netbeans.spi.diff.DiffProvider;
-import org.openide.ErrorManager;
 
 /**
  * The parser of an external diff utility compatible with Unix diff output.
@@ -129,14 +124,14 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
      * Get the display name of this diff provider.
      */
     public String getDisplayName() {
-        return NbBundle.getMessage(CmdlineDiffProvider.class, "displayName");
+        return Bundle.displayName();
     }
     
     /**
      * Get a short description of this diff provider.
      */
     public String getShortDescription() {
-        return NbBundle.getMessage(CmdlineDiffProvider.class, "shortDescription");
+        return Bundle.shortDescription();
     }
 
     /**
@@ -150,8 +145,8 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
         File f1 = null;
         File f2 = null;
         try {
-            f1 = FileUtil.normalizeFile(File.createTempFile("TempDiff".intern(), null));
-            f2 = FileUtil.normalizeFile(File.createTempFile("TempDiff".intern(), null));
+            f1 = File.createTempFile("TempDiff".intern(), null);
+            f2 = File.createTempFile("TempDiff".intern(), null);
             FileWriter fw1 = new FileWriter(f1);
             FileWriter fw2 = new FileWriter(f2);
             char[] buffer = new char[BUFF_LENGTH];
@@ -170,23 +165,6 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
     }
     
     /**
-     * Create the differences of the content of two FileObjects.
-     * @param fo1 the first FileObject
-     * @param fo2 the second FileObject to be compared with the first one.
-     * @return the list of differences found, instances of {@link Difference};
-     *        or <code>null</code> when some error occured.
-     */
-    public Difference[] computeDiff(FileObject fo1, FileObject fo2) throws IOException {
-        File f1 = FileUtil.toFile(fo1);
-        File f2 = FileUtil.toFile(fo2);
-        if (f1 != null && f2 != null) {
-            return createDiff(f1, f2);
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Executes (possibly broken) external program.
      */
     private Difference[] createDiff(File f1, File f2) throws IOException {
@@ -196,8 +174,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
             try {
                 pattern = Pattern.compile(DIFF_REGEXP);
             } catch (PatternSyntaxException resex) {
-                throw (IOException) ErrorManager.getDefault().annotate(
-                    new IOException(), resex.getLocalizedMessage());
+                throw (IOException)new IOException().initCause(resex);
             }
             //firstText = new StringBuffer();
             //secondText = new StringBuffer();
@@ -205,7 +182,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
         diffCmd = diffCmd.replace("\"{0}\"", "{0}").replace("\"{1}\"", "{1}");  // compatibility // NOI18N
         String firstPath;
         String secondPath;
-        if (Utilities.isWindows()) {
+        if (isWindows()) {
             firstPath = "\"" + f1.getAbsolutePath() + "\""; // NOI18N
             secondPath = "\"" + f2.getAbsolutePath() + "\""; // NOI18N
         } else {
@@ -219,7 +196,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
         Runnable cancellableProcessWrapper = new Runnable() {
             public void run() {
                 try {
-                    ErrorManager.getDefault().log("#69616 CDP: executing: " + cmd); // NOI18N
+                    LOGGER.fine("#69616 CDP: executing: " + cmd); // NOI18N
                     synchronized(p) {
                         p[0] = Runtime.getRuntime().exec(cmd);
                     }
@@ -247,8 +224,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
                     setTextOnLastDifference(differences, firstText, secondText);
                     ret[0] =  differences.toArray(new Difference[differences.size()]);
                 } catch (IOException ioex) {
-                    ret[0] = (IOException) ErrorManager.getDefault().annotate(ioex,
-                            NbBundle.getMessage(CmdlineDiffProvider.class, "runtimeError", cmd));
+                    ret[0] = new IOException(Bundle.runtimeError(cmd)).initCause(ioex);
                 }
             }
         };
@@ -272,6 +248,10 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
 
     }
 
+    private boolean isWindows() {
+        return File.pathSeparatorChar==';';
+    }
+
     public static void setTextOnLastDifference(List<Difference> differences,
         StringBuffer firstText, StringBuffer secondText) {
         if (differences.size() > 0) {
@@ -279,7 +259,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
             if (t1.length() == 0) t1 = null;
             String t2 = secondText.toString();
             if (t2.length() == 0) t2 = null;
-            Difference d = (Difference) differences.remove(differences.size() - 1);
+            Difference d = differences.remove(differences.size() - 1);
             differences.add(new Difference(d.getType(), d.getFirstStart(), d.getFirstEnd(),
             d.getSecondStart(), d.getSecondEnd(), t1, t2));
             firstText.delete(0, firstText.length());
@@ -420,5 +400,6 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
             differences.add(new Difference(Difference.CHANGE, n1, n2, n3, n4));
         }
     }
-    
+
+    private static final Logger LOGGER = Logger.getLogger(CmdlineDiffProvider.class.getName());
 }

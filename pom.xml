@@ -11,6 +11,17 @@
       <artifactId>localizer</artifactId>
       <version>1.10</version>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.4</version>
+    </dependency>
   </dependencies>
 
   <name>Diff/Patch code from Eclipse</name>
@@ -39,7 +50,7 @@
       <plugin>
         <groupId>org.jvnet.localizer</groupId>
         <artifactId>maven-localizer-plugin</artifactId>
-        <version>1.10</version>
+        <version>1.12-SNAPSHOT</version>
         <executions>
           <execution>
             <goals>

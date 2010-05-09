@@ -41,15 +41,12 @@
 
 package org.netbeans.api.diff;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
-import org.openide.util.io.ReaderInputStream;
-import org.openide.util.Lookup;
-import org.openide.util.lookup.Lookups;
-import org.openide.filesystems.FileUtil;
-import org.netbeans.api.queries.FileEncodingQuery;
 
 /**
  * This class provides streams and information about them to be used by diff
@@ -85,27 +82,6 @@ public abstract class StreamSource extends Object {
         return false;
     }
 
-    /**
-     * Source lookup that may define the content of this source. In case the lookup does not provide anything
-     * usable, createReader() is used instead. Diff engines can process these inputs: 
-     * <ul>
-     * <li> instance of {@link org.openide.filesystems.FileObject} - in this case, the content of the source is defined 
-     * by calling DataObject.find(fileObject).openDocument(). If the source is editable then it is
-     * saved back via SaveCookie.save() when the Diff component closes.
-     * <li> instance of {@link javax.swing.text.Document} - in this case, the content of the source is defined 
-     * by this Document and the source will NOT be editable.
-     * </ul>
-     * 
-     * For compatibility purposes, it is still adviced to fully implement createReader() as older Diff providers may
-     * not use this method of obtaining the source.
-     * 
-     * @return an instance of Lookup
-     * @since 1.17
-     */ 
-    public Lookup getLookup() {
-        return Lookups.fixed();
-    }
-    
     /**
      * Create a reader, that reads the source.
      */
@@ -174,19 +150,19 @@ public abstract class StreamSource extends Object {
             }
         }
         
-        Impl(String name, String title, String MIMEType, File file) {
+        Impl(String name, String title, String MIMEType, File file, Charset encoding) {
             this.name = name;
             this.title = title;
             this.MIMEType = MIMEType;
             this.readerSource = null;
             this.w = null;
             this.file = file;
-            encoding = FileEncodingQuery.getEncoding(FileUtil.toFileObject(file));
+            this.encoding = encoding;
         }
         
         private File createReaderSource(Reader r) throws IOException {
             File tmp = null;
-            tmp = FileUtil.normalizeFile(File.createTempFile("sss", "tmp"));
+            tmp = File.createTempFile("sss", "tmp");
             tmp.deleteOnExit();
             tmp.createNewFile();
             InputStream in = null;
@@ -199,7 +175,7 @@ public abstract class StreamSource extends Object {
                     copyStreamsCloseAll(new OutputStreamWriter(baos, encoding), r);
                     in = new ByteArrayInputStream(baos.toByteArray());
                 }
-                org.openide.filesystems.FileUtil.copy(in, out = new FileOutputStream(tmp));
+                IOUtils.copy(in, out = new FileOutputStream(tmp));
             } finally {
                 if (in != null) in.close();
                 if (out != null) out.close();

@@ -41,13 +41,10 @@
 
 package org.netbeans.api.diff;
 
-import java.awt.Component;
+import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collection;
-
-import org.openide.util.Lookup;
 
 /**
  * This class represents a visual diff presenter, that knows how to compute the
@@ -57,20 +54,6 @@ import org.openide.util.Lookup;
  */
 public abstract class Diff extends Object {
 
-    /**
-     * Get the default visual diff presenter.
-     */
-    public static Diff getDefault() {
-        return Lookup.getDefault().lookup(Diff.class);
-    }
-    
-    /**
-     * Get all visual diff presenters registered in the system.
-     */
-    public static Collection<? extends Diff> getAll() {
-        return Lookup.getDefault().lookup(new Lookup.Template<Diff>(Diff.class)).allInstances();
-    }
-    
     /**
      * Show the visual representation of the diff between two sources.
      * @param name1 the name of the first source

@@ -64,7 +64,7 @@ public abstract class DiffProvider extends Object {
         return (DiffProvider) Lookup.getDefault().lookup(DiffProvider.class);
     }
      */
-    
+
     /**
      * Create the differences of the content two streams.
      * @param r1 the first source

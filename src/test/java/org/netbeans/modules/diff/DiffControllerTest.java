@@ -40,21 +40,20 @@
  */
 package org.netbeans.modules.diff;
 
-import org.netbeans.junit.NbTestCase;
-import org.netbeans.api.diff.DiffController;
-import org.netbeans.api.diff.StreamSource;
+import junit.framework.TestCase;
 import org.netbeans.api.diff.Difference;
+import org.netbeans.api.diff.StreamSource;
 
 import javax.swing.*;
-import java.io.Reader;
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 
 /**
  * @author Maros Sandor
  */
-public class DiffControllerTest extends NbTestCase {
+public class DiffControllerTest extends TestCase {
 
     private DiffController controller;
 
