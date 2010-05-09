@@ -44,6 +44,7 @@ import junit.framework.TestCase;
 
 import java.io.*;
 
+import junit.framework.TestSuite;
 import org.netbeans.api.diff.Difference;
 import org.netbeans.modules.diff.builtin.provider.BuiltInDiffProvider;
 
@@ -54,50 +55,47 @@ import org.netbeans.modules.diff.builtin.provider.BuiltInDiffProvider;
  */
 public class UnifiedDiffTest extends TestCase {
     
-    private File    dataRootDir;
-    private File[]  testFiles;
-    private int     idx0;
-    private int     idx1;
     private BuiltInDiffProvider diffProvider;
+    private final File[] toDiff;
 
-    public UnifiedDiffTest(String testName) {
-        super(testName);
+    public UnifiedDiffTest(File[] toDiff) {
+        super("Testing: " + toDiff[0].getName() + " <-> " + toDiff[1].getName());
+        this.toDiff = toDiff;
     }
 
     protected void setUp() throws Exception {
-        //data.root.dir defined in project.properties
-        dataRootDir = new File(getClass().getResource("/data/unidiff/1.txt").getPath()).getParentFile().getParentFile();
         diffProvider = new BuiltInDiffProvider();
         diffProvider.setTrimLines(false);
-        initPermutations();
     }
 
-    private void initPermutations() {
-        testFiles = new File(dataRootDir, "unidiff").listFiles();
-        idx0 = 0;
-        idx1 = 0;
-    }
+    public static TestSuite suite() {
+        TestSuite r = new TestSuite();
 
-    private File[] getNextPermutation() {
-        if (++idx1 == idx0) idx1++;
-        if (idx1 >= testFiles.length) {
-            if (++idx0 >= testFiles.length) return null;
-            idx1 = 0;
-        }
-        return new File [] { testFiles[idx0], testFiles[idx1] };
-    }
-    
-    public void testUnifiedDiff() throws Exception {
+        File dataRootDir = new File(UnifiedDiffTest.class.getResource("/data/unidiff/1.txt").getPath()).getParentFile().getParentFile();
+        File[] testFiles = new File(dataRootDir, "unidiff").listFiles();
+        int idx0=0, idx1=0;
+
         for (;;) {
-            File [] toDiff = getNextPermutation();
-            if (toDiff == null) break;
-            System.out.println("Testing: " + toDiff[0].getName() + " <-> " + toDiff[1].getName());
-            String internalDiff = getInternalDiff(toDiff);
-            String externalDiff = getExternalDiff(toDiff);
-            if (!diffsEqual(internalDiff, externalDiff)) {
-                saveFailure(externalDiff, internalDiff);
-                fail("Diff failed: " + toDiff[0].getName() + " <-> " + toDiff[1].getName());
+            if (++idx1 == idx0) idx1++;
+            if (idx1 >= testFiles.length) {
+                if (++idx0 >= testFiles.length) break;
+                idx1 = 0;
             }
+            final File[] toDiff = new File [] { testFiles[idx0], testFiles[idx1] };
+
+            r.addTest(new UnifiedDiffTest(toDiff));
+        }
+
+        return r;
+    }
+
+    @Override
+    protected void runTest() throws Throwable {
+        String internalDiff = getInternalDiff(toDiff);
+        String externalDiff = getExternalDiff(toDiff);
+        if (!diffsEqual(internalDiff, externalDiff)) {
+            saveFailure(externalDiff, internalDiff);
+            fail("Diff failed: " + toDiff[0].getName() + " <-> " + toDiff[1].getName());
         }
     }
 
