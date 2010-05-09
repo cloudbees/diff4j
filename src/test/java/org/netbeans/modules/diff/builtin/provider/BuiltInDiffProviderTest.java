@@ -44,7 +44,6 @@ package org.netbeans.modules.diff.builtin.provider;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 
 import junit.framework.TestCase;
@@ -151,42 +150,26 @@ public class BuiltInDiffProviderTest extends TestCase {
     }
     
     public void testFile1() throws Exception {
-        //System.out.println("Stream = "+BuiltInDiffProviderTest.class.getResourceAsStream(
-        //        "/org/netbeans/modules/diff/builtin/provider/DiffTestFile1a.txt"));
-        BufferedReader r1 = new BufferedReader(new InputStreamReader(
-            BuiltInDiffProviderTest.class.getResourceAsStream(
-                "/org/netbeans/modules/diff/builtin/provider/DiffTestFile1a.txt")
-        ));
-        BufferedReader r2 = new BufferedReader(new InputStreamReader(
-            BuiltInDiffProviderTest.class.getResourceAsStream(
-                "/org/netbeans/modules/diff/builtin/provider/DiffTestFile1b.txt")
-        ));
+        BufferedReader r1 = newReader("DiffTestFile1a.txt");
+        BufferedReader r2 = newReader("DiffTestFile1b.txt");
         DiffProvider bdp = createDiffProvider();
         Difference[] diff = bdp.computeDiff(r1, r2);
-        BufferedReader differences = new BufferedReader(new InputStreamReader(
-            BuiltInDiffProviderTest.class.getResourceAsStream(
-                "/org/netbeans/modules/diff/builtin/provider/DiffTestFile1d.txt")
-        ));
+        BufferedReader differences = newReader("DiffTestFile1d.txt");
         assertTrue(checkDifferences(diff, differences));
     }
-    
+
+    private BufferedReader newReader(String path) {
+        return new BufferedReader(new InputStreamReader(BuiltInDiffProviderTest.class.getResourceAsStream(path)));
+    }
+
     public void testFile2() throws Exception {
         //System.out.println("Stream = "+BuiltInDiffProviderTest.class.getResourceAsStream(
         //        "/org/netbeans/modules/diff/builtin/provider/DiffTestFile2a.txt"));
-        BufferedReader r1 = new BufferedReader(new InputStreamReader(
-            BuiltInDiffProviderTest.class.getResourceAsStream(
-                "/org/netbeans/modules/diff/builtin/provider/DiffTestFile2a.txt")
-        ));
-        BufferedReader r2 = new BufferedReader(new InputStreamReader(
-            BuiltInDiffProviderTest.class.getResourceAsStream(
-                "/org/netbeans/modules/diff/builtin/provider/DiffTestFile2b.txt")
-        ));
+        BufferedReader r1 = newReader("DiffTestFile2a.txt");
+        BufferedReader r2 = newReader("DiffTestFile2b.txt");
         DiffProvider bdp = createDiffProvider();
         Difference[] diff = bdp.computeDiff(r1, r2);
-        BufferedReader differences = new BufferedReader(new InputStreamReader(
-            BuiltInDiffProviderTest.class.getResourceAsStream(
-                "/org/netbeans/modules/diff/builtin/provider/DiffTestFile2d.txt")
-        ));
+        BufferedReader differences = newReader("DiffTestFile2d.txt");
         assertTrue(checkDifferences(diff, differences));
     }
     
