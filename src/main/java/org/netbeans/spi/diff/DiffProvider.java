@@ -47,6 +47,7 @@ import java.io.Reader;
 //import org.openide.util.Lookup;
 
 import org.netbeans.api.diff.Difference;
+import org.netbeans.modules.diff.builtin.provider.Bundle;
 
 /**
  * This class represents a provider of diff algorithm. The implementing class
@@ -58,6 +59,12 @@ import org.netbeans.api.diff.Difference;
  * @author  Martin Entlicher
  */
 public abstract class DiffProvider extends Object {
+    public abstract String getDisplayName();
+
+    /**
+     * Get a short description of this diff provider.
+     */
+    public abstract String getShortDescription();
 
     /*
     public static DiffProvider getDefault() {

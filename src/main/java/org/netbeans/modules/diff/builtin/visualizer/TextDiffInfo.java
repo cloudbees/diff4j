@@ -5,31 +5,29 @@ import org.netbeans.api.diff.Difference;
 import java.io.IOException;
 import java.io.Reader;
 
-public class TextDiffInfo extends Info {
+public class TextDiffInfo {
+    private String name1;
+    private String name2;
+
 
     private Reader r1;
     private Reader r2;
     private Difference[] diffs;
-    private boolean contextMode;
-    private int contextNumLines;
 
-    public TextDiffInfo(String name1, String name2, String title1, String title2,
-                        Reader r1, Reader r2, Difference[] diffs) {
-        super(name1, name2, title1, title2, null, false, false);
+    public TextDiffInfo(String name1, String name2, Reader r1, Reader r2, Difference[] diffs) {
+        this.name1 = name1;
+        this.name2 = name2;
         this.r1 = r1;
         this.r2 = r2;
         this.diffs = diffs;
     }
 
-    public String getName() {
-        String componentName = getName1();
-        String name2 = getName2();
-        if (name2 != null && name2.length() > 0)  componentName += " <> "+name2;
-        return componentName;
+    public String getName1() {
+        return name1;
     }
 
-    public String getTitle() {
-        return getTitle1() + " <> " + getTitle2();
+    public String getName2() {
+        return name2;
     }
 
     public Reader createFirstReader() {
@@ -44,26 +42,15 @@ public class TextDiffInfo extends Info {
         return diffs;
     }
 
-    /** Setter for property contextMode.
-     * @param contextMode New value of property contextMode.
+    /**
+     * @param numContextLine
+     *      Number of context lines to generate around the diff.
      */
-    public void setContextMode(boolean contextMode, int contextNumLines) {
-        this.contextMode = contextMode;
-        this.contextNumLines = contextNumLines;
-    }
-
-    /** Getter for property contextMode.
-     * @return Value of property contextMode.
-     */
-    public boolean isContextMode() {
-        return contextMode;
-    }
-
-    public int getContextNumLines() {
-        return contextNumLines;
+    public String toUnifiedDiffText(int numContextLine) throws IOException {
+        return new UnifiedDiff(this, numContextLine).computeDiff();
     }
 
     public String toUnifiedDiffText() throws IOException {
-        return new UnifiedDiff(this).computeDiff();
+        return toUnifiedDiffText(3);
     }
 }

@@ -48,7 +48,7 @@ import java.io.Serializable;
  *
  * @author  Martin Entlicher
  */
-public class Difference extends Object implements Serializable {
+public class Difference implements Serializable {
 
     /** Delete type of difference - a portion of a file was removed in the other */
     public static final int DELETE = 0;
@@ -220,7 +220,7 @@ public class Difference extends Object implements Serializable {
     /**
      * This class represents a difference on a single line.
      */
-    public static final class Part extends Object implements Serializable {
+    public static final class Part implements Serializable {
         
         private int type;
         private int line;

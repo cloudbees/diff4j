@@ -129,9 +129,8 @@ public class UnifiedDiffTest extends TestCase {
         r2 = new FileReader(toDiff[1]);
         
         TextDiffInfo diffInfo = new TextDiffInfo(
-                "name1", "name2", "title1", "title2", r1, r2, diffs);
-        diffInfo.setContextMode(true, 3);
-        return diffInfo.toUnifiedDiffText();
+                "name1", "name2", r1, r2, diffs);
+        return diffInfo.toUnifiedDiffText(3);
     }
 
     private String getExternalDiff(File[] toDiff) throws IOException {

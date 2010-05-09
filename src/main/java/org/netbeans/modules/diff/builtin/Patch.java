@@ -45,6 +45,7 @@ import java.io.BufferedReader;
 import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -179,7 +180,7 @@ public class Patch extends Reader {
     
     /** Reads a line and returns the char sequence for newline */
     private static String readLine(PushbackReader r, StringBuffer nl) throws IOException {
-        StringBuffer line = new StringBuffer();
+        StringBuilder line = new StringBuilder();
         int ic = r.read();
         if (ic == -1) return null;
         char c = (char) ic;
@@ -208,7 +209,7 @@ public class Patch extends Reader {
     private static String convertNewLines(String text, String newLine) {
         if (text == null) return ""; // NOI18N
         if (newLine == null) return text;
-        StringBuffer newText = new StringBuffer();
+        StringBuilder newText = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '\n') newText.append(newLine);
@@ -265,8 +266,8 @@ public class Patch extends Reader {
 
     private static int numChars(char c, char[] chars) {
         int n = 0;
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == c) n++;
+        for (char ch : chars) {
+            if (ch == c) n++;
         }
         return n;
     }
@@ -313,7 +314,7 @@ public class Patch extends Reader {
             } else continue;
             ArrayList<Object> secondChanges = new ArrayList<Object>(); // List of intervals and texts
             line = fillChanges(secondInterval, br, DIFFERENCE_DELIMETER, secondChanges);
-            if (changesCountInvariant(firstChanges, secondChanges) == false) {
+            if (!changesCountInvariant(firstChanges, secondChanges)) {
                 throw new IOException("Diff file format error. Number of new and old file changes in one hunk must be same!");   // NOI18N
             }
             mergeChanges(firstInterval, secondInterval, firstChanges, secondChanges, diffs);
@@ -330,7 +331,7 @@ public class Patch extends Reader {
             if (ints[2] == 2) {
                 i1++;
             }
-            String skip = (String) it.next();
+            it.next(); // skip
         }
 
         int i2 = 0;
@@ -340,7 +341,7 @@ public class Patch extends Reader {
             if (ints[2] == 2) {
                 i2++;
             }
-            String skip = (String) it.next();
+            it.next(); // skip
         }
 
         return i1 == i2;
@@ -367,7 +368,7 @@ public class Patch extends Reader {
                 int[] changeInterval = new int[3];
                 changeInterval[0] = pos;
                 changeInterval[2] = Difference.ADD;
-                StringBuffer changeText = new StringBuffer();
+                StringBuilder changeText = new StringBuilder();
                 changeText.append(line.substring(LINE_PREP_ADD.length()));
                 changeText.append('\n');
                 do {
@@ -389,7 +390,7 @@ public class Patch extends Reader {
                 int[] changeInterval = new int[3];
                 changeInterval[0] = pos;
                 changeInterval[2] = Difference.DELETE;
-                StringBuffer changeText = new StringBuffer();
+                StringBuilder changeText = new StringBuilder();
                 changeText.append(line.substring(LINE_PREP_REMOVE.length()));
                 changeText.append('\n');
                 do {
@@ -411,7 +412,7 @@ public class Patch extends Reader {
                 int[] changeInterval = new int[3];
                 changeInterval[0] = pos;
                 changeInterval[2] = Difference.CHANGE;
-                StringBuffer changeText = new StringBuffer();
+                StringBuilder changeText = new StringBuilder();
                 changeText.append(line.substring(LINE_PREP_CHANGE.length()));
                 changeText.append('\n');
                 do {
@@ -589,7 +590,7 @@ public class Patch extends Reader {
         while (line != null && pos1 <= interval[1] && pos2 <= interval[3]) {
             if (line.startsWith(LINE_PREP_UNIF_ADD)) {
                 int begin = pos2;
-                StringBuffer changeText = new StringBuffer();
+                StringBuilder changeText = new StringBuilder();
                 changeText.append(line.substring(LINE_PREP_UNIF_ADD.length()));
                 changeText.append('\n');
                 do {
@@ -604,7 +605,7 @@ public class Patch extends Reader {
                 } while (true);
                 Difference diff = null;
                 if (diffs.size() > 0) {
-                    Difference previousDiff = (Difference) diffs.get(diffs.size() - 1);
+                    Difference previousDiff = diffs.get(diffs.size() - 1);
                     if (Difference.DELETE == previousDiff.getType() && previousDiff.getFirstEnd() == (pos1 - 1)) {
                         diff = new Difference(Difference.CHANGE,
                             previousDiff.getFirstStart(), previousDiff.getFirstEnd(),
@@ -618,7 +619,7 @@ public class Patch extends Reader {
                 diffs.add(diff);
             } else if (line.startsWith(LINE_PREP_UNIF_REMOVE)) {
                 int begin = pos1;
-                StringBuffer changeText = new StringBuffer();
+                StringBuilder changeText = new StringBuilder();
                 changeText.append(line.substring(LINE_PREP_UNIF_REMOVE.length()));
                 changeText.append('\n');
                 do {
@@ -633,7 +634,7 @@ public class Patch extends Reader {
                 } while (true);
                 Difference diff = null;
                 if (diffs.size() > 0) {
-                    Difference previousDiff = (Difference) diffs.get(diffs.size() - 1);
+                    Difference previousDiff = diffs.get(diffs.size() - 1);
                     if (Difference.ADD == previousDiff.getType() && previousDiff.getSecondEnd() == (pos2 - 1)) {
                         diff = new Difference(Difference.CHANGE, begin, pos1 - 1,
                             previousDiff.getFirstStart(), previousDiff.getFirstEnd(),
@@ -796,7 +797,7 @@ public class Patch extends Reader {
                     patchSource.unread(buff, 0, length);
                     return true;
                 } else if (input.startsWith(FILE_INDEX)) {
-                    StringBuffer name = new StringBuffer(input.substring(FILE_INDEX.length()));
+                    StringBuilder name = new StringBuilder(input.substring(FILE_INDEX.length()));
                     if (nl < 0) {
                         int r;
                         char c;
@@ -862,7 +863,7 @@ public class Patch extends Reader {
         
     }
     
-    public static class FileDifferences extends Object {
+    public static class FileDifferences {
         
         private String fileName;
         private String indexName;

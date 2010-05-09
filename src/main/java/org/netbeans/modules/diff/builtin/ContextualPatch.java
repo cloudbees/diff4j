@@ -40,6 +40,8 @@
  */
 package org.netbeans.modules.diff.builtin;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -288,9 +290,6 @@ public final class ContextualPatch {
 
     private List<String> readFile(File target) throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(target), getEncoding(target)));
-        if (r == null) {
-            r = new BufferedReader(new FileReader(target));
-        }
         try {
             List<String> lines = new ArrayList<String>();
             String line;
@@ -299,7 +298,7 @@ public final class ContextualPatch {
             }
             return lines;
         } finally {
-            if (r != null) try { r.close(); } catch (IOException e) {}
+            IOUtils.closeQuietly(r);
         }
     }
 
@@ -362,7 +361,7 @@ public final class ContextualPatch {
                 }
             }
         }
-        patch.hunks = (Hunk[]) hunks.toArray(new Hunk[hunks.size()]);
+        patch.hunks = hunks.toArray(new Hunk[hunks.size()]);
     }
     
     /**
@@ -402,7 +401,7 @@ public final class ContextualPatch {
                 }
             }
         }
-        patch.hunks = (Hunk[]) hunks.toArray(new Hunk[hunks.size()]);
+        patch.hunks = hunks.toArray(new Hunk[hunks.size()]);
     }
 
     private void parseNormalRange(Hunk hunk, Matcher m) {
@@ -467,7 +466,7 @@ public final class ContextualPatch {
                 }
             }
         }
-        patch.hunks = (Hunk[]) hunks.toArray(new Hunk[hunks.size()]);
+        patch.hunks = hunks.toArray(new Hunk[hunks.size()]);
         convertContextToUnified(patch);
     }
 
@@ -575,7 +574,7 @@ public final class ContextualPatch {
                 break;
             }
         }
-        patch.hunks = (Hunk[]) hunks.toArray(new Hunk[hunks.size()]);
+        patch.hunks = hunks.toArray(new Hunk[hunks.size()]);
     }
 
     private void computeTargetPath(String base, String modified, SinglePatch patch) {

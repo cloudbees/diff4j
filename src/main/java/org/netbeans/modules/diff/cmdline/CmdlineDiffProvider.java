@@ -202,7 +202,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
                     }
                     Reader stdout = new InputStreamReader(p[0].getInputStream());
                     char[] buffer = new char[BUFF_LENGTH];
-                    StringBuffer outBuffer = new StringBuffer();
+                    StringBuilder outBuffer = new StringBuilder();
                     int length;
                     List<Difference> differences = new ArrayList<Difference>();
                     while ((length = stdout.read(buffer)) > 0) {
@@ -278,8 +278,8 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
         //D.deb("diff match: "+elements[0]); // NOI18N
         //System.out.println("diff outputData: "+elements[0]); // NOI18N
 
-        int index = 0, commaIndex = 0;
-        int n1 = 0, n2 = 0, n3 = 0, n4 = 0;
+        int index, commaIndex;
+        int n1, n2, n3, n4;
         String nStr;
         if (pattern.matcher(elements).matches()) {
             setTextOnLastDifference(differences, firstText, secondText);

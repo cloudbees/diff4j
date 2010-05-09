@@ -53,17 +53,20 @@ import java.io.*;
 final class UnifiedDiff {
     
     private final TextDiffInfo diffInfo;
-    private BufferedReader baseReader; 
+    private final int numContextLine;
+
+    private BufferedReader baseReader;
     private BufferedReader modifiedReader;
     private final String newline;
     private boolean baseEndsWithNewline;
     private boolean modifiedEndsWithNewline;
-    
+
     private int   currentBaseLine;
     private int   currentModifiedLine;
 
-    public UnifiedDiff(TextDiffInfo diffInfo) {
+    public UnifiedDiff(TextDiffInfo diffInfo, int numContextLine) {
         this.diffInfo = diffInfo;
+        this.numContextLine = numContextLine;
         currentBaseLine = 1;
         currentModifiedLine = 1;
         this.newline = System.getProperty("line.separator");
@@ -112,7 +115,7 @@ final class UnifiedDiff {
         Hunk hunk = new Hunk();
         
         Difference firstDiff = diffInfo.getDifferences()[firstDifference];
-        int contextLines = diffInfo.getContextNumLines();
+        int contextLines = numContextLine;
 
         int skipLines;
         if (firstDiff.getType() == Difference.ADD) {
@@ -160,7 +163,7 @@ final class UnifiedDiff {
         }
         
         // output bottom context lines 
-        writeContextLines(hunk, diffInfo.getContextNumLines());
+        writeContextLines(hunk, numContextLine);
         
         if (hunk.modifiedCount == 0) hunk.modifiedStart = 0;    // empty file
         if (hunk.baseCount == 0) hunk.baseStart = 0;    // empty file
@@ -195,7 +198,7 @@ final class UnifiedDiff {
     }
 
     private int getLastIndex(int firstIndex) {
-        int contextLines = diffInfo.getContextNumLines() * 2;
+        int contextLines = numContextLine * 2;
         Difference [] diffs = diffInfo.getDifferences();
         for (++firstIndex; firstIndex < diffs.length; firstIndex++) {
             Difference prevDiff = diffs[firstIndex - 1]; 

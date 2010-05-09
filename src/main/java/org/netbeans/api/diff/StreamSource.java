@@ -54,7 +54,7 @@ import java.nio.charset.UnsupportedCharsetException;
  *
  * @author  Martin Entlicher
  */
-public abstract class StreamSource extends Object {
+public abstract class StreamSource {
     
     /**
      * Get the name of the source.
