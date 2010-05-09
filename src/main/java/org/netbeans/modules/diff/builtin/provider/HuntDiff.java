@@ -125,7 +125,7 @@ public class HuntDiff {
         
         List<Difference> differences = getDifferences(J, lines1_original, lines2_original);
         cleanup(differences);
-        return differences.toArray(new Difference[0]);
+        return differences.toArray(new Difference[differences.size()]);
     }
     
     private static int findAssoc(String line1, Line[] l2s, boolean[] equivalence) {
@@ -201,7 +201,7 @@ public class HuntDiff {
                     break;
                 }
             }
-            if (equivalence[p] == true) {
+            if (equivalence[p]) {
                 break;
             } else {
                 p++;
@@ -225,7 +225,7 @@ public class HuntDiff {
             if (start1 > n) break;
             if (J[start1] < start2) { // There's something extra in the first file
                 int end1 = start1 + 1;
-                StringBuffer deletedText = new StringBuffer();
+                StringBuilder deletedText = new StringBuilder();
                 deletedText.append(lines1[start1-1]).append('\n');
                 while (end1 <= n && J[end1] < start2) {
                     String line = lines1[end1-1];
@@ -236,7 +236,7 @@ public class HuntDiff {
                 start1 = end1;
             } else { // There's something extra in the second file
                 int end2 = J[start1];
-                StringBuffer addedText = new StringBuffer();
+                StringBuilder addedText = new StringBuilder();
                 for (int i = start2; i < end2; i++) {
                     String line = lines2[i-1];
                     addedText.append(line).append('\n');
