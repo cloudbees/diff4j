@@ -2,6 +2,7 @@ package org.netbeans.modules.diff.builtin.visualizer;
 
 import org.netbeans.api.diff.Difference;
 
+import java.io.IOException;
 import java.io.Reader;
 
 public class TextDiffInfo extends Info {
@@ -62,4 +63,7 @@ public class TextDiffInfo extends Info {
         return contextNumLines;
     }
 
+    public String toUnifiedDiffText() throws IOException {
+        return new UnifiedDiff(this).computeDiff();
+    }
 }

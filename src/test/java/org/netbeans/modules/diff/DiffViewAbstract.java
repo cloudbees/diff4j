@@ -43,7 +43,7 @@ package org.netbeans.modules.diff;
 
 import java.io.*;
 
-import org.netbeans.junit.*;
+import junit.framework.TestCase;
 import org.netbeans.api.diff.DiffView;
 import org.netbeans.api.diff.Difference;
 import org.netbeans.api.diff.StreamSource;
