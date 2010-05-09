@@ -43,13 +43,10 @@ package com.infradna.diff;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
-import com.infradna.diff.Difference;
 
-
-public class HuntDiff {
+class HuntDiff {
 
     private HuntDiff() {
     }
@@ -60,37 +57,20 @@ public class HuntDiff {
      * @param ignoreWhitespace true to ignore leading and trailing whitespace when computing diff, false to also find differences in whitespace
      * @return computed diff
      */ 
-    public static Difference[] diff(String[] lines1, String[] lines2, boolean ignoreWhitespace) {
-        int m = lines1.length;
-        int n = lines2.length;
-        String [] lines1_original = lines1;
-        String [] lines2_original = lines2;
+    public static Diff diff(List<String> lines1, List<String> lines2, boolean ignoreWhitespace) {
+        int m = lines1.size();
+        int n = lines2.size();
+        List<String> orig1=lines1, orig2=lines2;
         if (ignoreWhitespace) {
-            lines1 = new String[lines1_original.length];
-            lines2 = new String[lines2_original.length];
-            for (int i = 0 ; i < lines1_original.length; i++) {
-                lines1[i] = lines1_original[i].trim();
-            }
-            for (int i = 0 ; i < lines2_original.length; i++) {
-                lines2[i] = lines2_original[i].trim();
-            }
+            lines1 = trimLines(lines1);
+            lines2 = trimLines(lines2);
         }
         Line[] l2s = new Line[n + 1];
         // In l2s we have sorted lines of the second file <1, n>
         for (int i = 1; i <= n; i++) {
-            l2s[i] = new Line(i, lines2[i - 1]);
+            l2s[i] = new Line(i, lines2.get(i - 1));
         }
-        Arrays.sort(l2s, 1, n+1, new Comparator<Line>() {
-            
-            public int compare(Line l1, Line l2) {
-                return l1.line.compareTo(l2.line);
-            }
-
-            public boolean equals(Object obj) {
-                return obj == this;
-            }
-            
-        });
+        Arrays.sort(l2s, 1, n+1);
         
         int[] equvalenceLines = new int[n+1];
         boolean[] equivalence = new boolean[n+1];
@@ -103,7 +83,7 @@ public class HuntDiff {
         equivalence[0] = true;
         int[] equivalenceAssoc = new int[m + 1];
         for (int i = 1; i <= m; i++) {
-            equivalenceAssoc[i] = findAssoc(lines1[i - 1], l2s, equivalence);
+            equivalenceAssoc[i] = findAssoc(lines1.get(i - 1), l2s, equivalence);
         }
         
         l2s = null;
@@ -124,11 +104,19 @@ public class HuntDiff {
             c = c.c;
         }
         
-        List<Difference> differences = getDifferences(J, lines1_original, lines2_original);
+        Diff differences = getDifferences(J, orig1, orig2);
         cleanup(differences);
-        return differences.toArray(new Difference[differences.size()]);
+        return differences;
     }
-    
+
+    private static List<String> trimLines(List<String> lines) {
+        List<String> r = new ArrayList<String>(lines.size());
+        for (String s : lines) {
+            r.add(s.trim());
+        }
+        return r;
+    }
+
     private static int findAssoc(String line1, Line[] l2s, boolean[] equivalence) {
         int idx = binarySearch(l2s, line1, 1, l2s.length - 1);
         if (idx < 1) {
@@ -212,10 +200,10 @@ public class HuntDiff {
         return k;
     }
     
-    private static List<Difference> getDifferences(int[] J, String[] lines1, String[] lines2) {
-        List<Difference> differences = new ArrayList<Difference>();
-        int n = lines1.length;
-        int m = lines2.length;
+    private static Diff getDifferences(int[] J, List<String> lines1, List<String> lines2) {
+        Diff differences = new Diff();
+        int n = lines1.size();
+        int m = lines2.size();
         int start1 = 1;
         int start2 = 1;
         do {
@@ -227,9 +215,9 @@ public class HuntDiff {
             if (J[start1] < start2) { // There's something extra in the first file
                 int end1 = start1 + 1;
                 StringBuilder deletedText = new StringBuilder();
-                deletedText.append(lines1[start1-1]).append('\n');
+                deletedText.append(lines1.get(start1-1)).append('\n');
                 while (end1 <= n && J[end1] < start2) {
-                    String line = lines1[end1-1];
+                    String line = lines1.get(end1-1);
                     deletedText.append(line).append('\n');
                     end1++;
                 }
@@ -239,7 +227,7 @@ public class HuntDiff {
                 int end2 = J[start1];
                 StringBuilder addedText = new StringBuilder();
                 for (int i = start2; i < end2; i++) {
-                    String line = lines2[i-1];
+                    String line = lines2.get(i-1);
                     addedText.append(line).append('\n');
                 }
                 differences.add(new Difference(Difference.ADD, (start1 - 1), 0, start2, (end2 - 1), null, addedText.toString()));
@@ -249,9 +237,9 @@ public class HuntDiff {
         if (start2 <= m) { // There's something extra at the end of the second file
             int end2 = start2 + 1;
             StringBuilder addedText = new StringBuilder();
-            addedText.append(lines2[start2-1]).append('\n');
+            addedText.append(lines2.get(start2-1)).append('\n');
             while (end2 <= m) {
-                String line = lines2[end2-1];
+                String line = lines2.get(end2-1);
                 addedText.append(line).append('\n');
                 end2++;
             }
@@ -294,7 +282,7 @@ public class HuntDiff {
         }
     }
     
-    private static class Line {
+    private static class Line implements Comparable<Line> {
 
         public int lineNo;
         public String line;
@@ -306,7 +294,10 @@ public class HuntDiff {
             this.line = line;
             this.hash = line.hashCode();
         }
-        
+
+        public int compareTo(Line that) {
+            return this.line.compareTo(that.line);
+        }
     }
     
     private static class Candidate {

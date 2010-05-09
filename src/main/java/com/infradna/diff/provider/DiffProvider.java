@@ -39,12 +39,13 @@
  * made subject to such option by the copyright holder.
  */
 
-package com.infradna.diff;
+package com.infradna.diff.provider;
+
+import com.infradna.diff.Diff;
+import com.infradna.diff.Difference;
 
 import java.io.IOException;
 import java.io.Reader;
-
-//import org.openide.util.Lookup;
 
 
 /**
@@ -64,19 +65,12 @@ public abstract class DiffProvider extends Object {
      */
     public abstract String getShortDescription();
 
-    /*
-    public static DiffProvider getDefault() {
-        return (DiffProvider) Lookup.getDefault().lookup(DiffProvider.class);
-    }
-     */
-
     /**
      * Create the differences of the content two streams.
      * @param r1 the first source
      * @param r2 the second source to be compared with the first one.
      * @return the list of differences found, instances of {@link Difference};
-     *         or <code>null</code> when some error occured.
      * @throws IOException when the reading from input streams fails.
      */
-    public abstract Difference[] computeDiff(Reader r1, Reader r2) throws IOException;
+    public abstract Diff computeDiff(Reader r1, Reader r2) throws IOException;
 }

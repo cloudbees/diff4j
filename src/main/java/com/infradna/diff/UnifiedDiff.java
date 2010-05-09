@@ -40,7 +40,10 @@
  */
 package com.infradna.diff;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
+import java.util.List;
 
 /**
  * Unified diff engine.
@@ -81,9 +84,9 @@ final class UnifiedDiff {
         buffer.append(diffInfo.getName2());
         buffer.append(newline);
         
-        Difference[] diffs = diffInfo.getDifferences();
+        List<Difference> diffs = diffInfo.getDifferences();
         
-        for (int currentDifference = 0; currentDifference < diffs.length; ) {
+        for (int currentDifference = 0; currentDifference < diffs.size(); ) {
             // the new hunk will span differences from currentDifference to lastDifference (exclusively)
             int lastDifference = getLastIndex(currentDifference);
             Hunk hunk = computeHunk(currentDifference, lastDifference);
@@ -111,7 +114,7 @@ final class UnifiedDiff {
 
         Hunk hunk = new Hunk();
         
-        Difference firstDiff = diffInfo.getDifferences()[firstDifference];
+        Difference firstDiff = diffInfo.getDifferences().get(firstDifference);
         int contextLines = numContextLine;
 
         int skipLines;
@@ -138,14 +141,14 @@ final class UnifiedDiff {
         
         // output differences with possible contextual lines in-between
         for (int i = firstDifference; i < lastDifference; i++) {
-            Difference diff = diffInfo.getDifferences()[i];
+            Difference diff = diffInfo.getDifferences().get(i);
             writeContextLines(hunk, diff.getFirstStart() - currentBaseLine + ((diff.getType() == Difference.ADD) ? 1 : 0));
             
             if (diff.getFirstEnd() > 0) {
                 int n = diff.getFirstEnd() - diff.getFirstStart() + 1;
                 outputLines(hunk, baseReader, "-", n);
                 hunk.baseCount += n;
-                if (!baseEndsWithNewline && i == diffInfo.getDifferences().length - 1 && diff.getFirstEnd() == currentBaseLine - 1) {
+                if (!baseEndsWithNewline && i == diffInfo.getDifferences().size() - 1 && diff.getFirstEnd() == currentBaseLine - 1) {
                     hunk.lines.add(Hunk.ENDING_NEWLINE);
                 }
             }
@@ -153,7 +156,7 @@ final class UnifiedDiff {
                 int n = diff.getSecondEnd() - diff.getSecondStart() + 1;
                 outputLines(hunk, modifiedReader, "+", n);
                 hunk.modifiedCount += n;
-                if (!modifiedEndsWithNewline && i == diffInfo.getDifferences().length - 1 && diff.getSecondEnd() == currentModifiedLine - 1) {
+                if (!modifiedEndsWithNewline && i == diffInfo.getDifferences().size() - 1 && diff.getSecondEnd() == currentModifiedLine - 1) {
                     hunk.lines.add(Hunk.ENDING_NEWLINE);
                 }
             }
@@ -196,10 +199,10 @@ final class UnifiedDiff {
 
     private int getLastIndex(int firstIndex) {
         int contextLines = numContextLine * 2;
-        Difference [] diffs = diffInfo.getDifferences();
-        for (++firstIndex; firstIndex < diffs.length; firstIndex++) {
-            Difference prevDiff = diffs[firstIndex - 1]; 
-            Difference currentDiff = diffs[firstIndex];
+        List<Difference> diffs = diffInfo.getDifferences();
+        for (++firstIndex; firstIndex < diffs.size(); firstIndex++) {
+            Difference prevDiff = diffs.get(firstIndex - 1);
+            Difference currentDiff = diffs.get(firstIndex);
             int prevEnd = 1 + ((prevDiff.getType() == Difference.ADD) ? prevDiff.getFirstStart() : prevDiff.getFirstEnd());
             int curStart = (currentDiff.getType() == Difference.ADD) ? (currentDiff.getFirstStart() + 1) : currentDiff.getFirstStart();
             if (curStart - prevEnd > contextLines) {
@@ -231,11 +234,7 @@ final class UnifiedDiff {
     }
 
     private static void copyStreamsCloseAll(Writer writer, Reader reader) throws IOException {
-        char [] buffer = new char[4096];
-        int n;
-        while ((n = reader.read(buffer)) != -1) {
-            writer.write(buffer, 0, n);
-        }
+        IOUtils.copy(reader,writer);
         writer.close();
         reader.close();
     }

@@ -40,9 +40,8 @@
  */
 package org.netbeans.modules.diff.builtin.visualizer;
 
-import com.infradna.diff.BuiltInDiffProvider;
-import com.infradna.diff.Difference;
-import com.infradna.diff.TextDiffInfo;
+import com.infradna.diff.provider.BuiltInDiffProvider;
+import com.infradna.diff.Diff;
 import junit.framework.TestCase;
 
 import java.io.*;
@@ -123,15 +122,13 @@ public class UnifiedDiffTest extends TestCase {
     private String getInternalDiff(File[] toDiff) throws IOException {
         Reader r1 = new FileReader(toDiff[0]);
         Reader r2 = new FileReader(toDiff[1]);
-        Difference[] diffs = diffProvider.computeDiff(r1, r2);
+        Diff diffs = diffProvider.computeDiff(r1, r2);
         r1.close();
         r2.close();
         r1 = new FileReader(toDiff[0]);
         r2 = new FileReader(toDiff[1]);
-        
-        TextDiffInfo diffInfo = new TextDiffInfo(
-                "name1", "name2", r1, r2, diffs);
-        return diffInfo.toUnifiedDiffText(3);
+
+        return diffs.toUnifiedDiff("name1","name2",r1,r2,3);
     }
 
     private String getExternalDiff(File[] toDiff) throws IOException {

@@ -41,11 +41,12 @@
 
 package com.infradna.diff;
 
+import com.infradna.diff.provider.CmdlineDiffProvider;
+
 import java.io.BufferedReader;
 import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -57,13 +58,13 @@ import java.util.regex.PatternSyntaxException;
  *
  * @author  Martin Entlicher
  */
-public class Patch extends Reader {
+class Patch extends Reader {
 
     private static final int CONTEXT_DIFF = 0;
     private static final int NORMAL_DIFF = 1;
     private static final int UNIFIED_DIFF = 2;
     
-    private Difference[] diffs;
+    private Diff diffs;
     private PushbackReader source;
     private int currDiff = 0;
     private int line = 1;
@@ -71,23 +72,12 @@ public class Patch extends Reader {
     private StringBuffer buff = new StringBuffer();
     
     /** Creates a new instance of Patch */
-    private Patch(Difference[] diffs, Reader source) {
+    Patch(Diff diffs, Reader source) {
         this.diffs = diffs;
         this.source = new PushbackReader(new BufferedReader(source), 1);
     }
     
-    /**
-     * Apply the patch to the source.
-     * @param diffs The differences to patch
-     * @param source The source stream
-     * @return The patched stream
-     * @throws IOException When reading from the source stread fails
-     * @throws ParseException When the source does not match the patch to be applied
-     */
-    public static Reader apply(Difference[] diffs, Reader source) {//throws IOException, ParseException {
-        return new Patch(diffs, source);
-    }
-    
+
     /**
      * Parse the differences.
      *
@@ -141,21 +131,22 @@ public class Patch extends Reader {
     }
     
     public void close() throws java.io.IOException {
-        if (currDiff < diffs.length) {
-            throw new IOException("There are " + (diffs.length - currDiff) + " pending hunks!");
+        if (currDiff < diffs.size()) {
+            throw new IOException("There are " + (diffs.size() - currDiff) + " pending hunks!");
         }
         source.close();
     }
     
     private void doRetrieve(int length) throws IOException {
         for (int size = 0; size < length; line++) {
-            if (currDiff < diffs.length &&
-                ((Difference.ADD == diffs[currDiff].getType() &&
-                  line == (diffs[currDiff].getFirstStart() + 1)) ||
-                 (Difference.ADD != diffs[currDiff].getType() &&
-                  line == diffs[currDiff].getFirstStart()))) {
-                if (compareText(source, diffs[currDiff].getFirstText())) {
-                    String text = convertNewLines(diffs[currDiff].getSecondText(), newLine);
+            Difference cur = diffs.get(currDiff);
+            if (currDiff < diffs.size() &&
+                ((Difference.ADD == cur.getType() &&
+                  line == (cur.getFirstStart() + 1)) ||
+                 (Difference.ADD != cur.getType() &&
+                  line == cur.getFirstStart()))) {
+                if (compareText(source, cur.getFirstText())) {
+                    String text = convertNewLines(cur.getSecondText(), newLine);
                     buff.append(text);
                     currDiff++;
                 } else {

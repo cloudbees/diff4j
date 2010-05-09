@@ -39,14 +39,21 @@
  * made subject to such option by the copyright holder.
  */
 
-package com.infradna.diff;
+package com.infradna.diff.provider;
 
-import java.io.*;
-import java.util.ArrayList;
+import com.infradna.diff.Bundle;
+import com.infradna.diff.Diff;
+import com.infradna.diff.Difference;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
+import java.io.Reader;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * The parser of an external diff utility compatible with Unix diff output.
@@ -65,7 +72,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
     private static final int BUFF_LENGTH = 1024;
 
     private String diffCmd;
-    private transient Pattern pattern;
+    private static final Pattern pattern = Pattern.compile(DIFF_REGEXP);
     //private transient StringBuffer firstText;
     //private transient StringBuffer secondText;
     
@@ -76,9 +83,6 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
      */
     public CmdlineDiffProvider(String diffCmd) {
         this.diffCmd = diffCmd;
-        try {
-            pattern = Pattern.compile(DIFF_REGEXP);
-        } catch (PatternSyntaxException resex) {}
         //firstText = new StringBuffer();
         //secondText = new StringBuffer();
     }
@@ -138,7 +142,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
      * @return the list of differences found, instances of {@link Difference};
      *        or <code>null</code> when some error occured.
      */
-    public Difference[] computeDiff(Reader r1, Reader r2) throws IOException {
+    public Diff computeDiff(Reader r1, Reader r2) throws IOException {
         File f1 = null;
         File f2 = null;
         try {
@@ -164,18 +168,9 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
     /**
      * Executes (possibly broken) external program.
      */
-    private Difference[] createDiff(File f1, File f2) throws IOException {
+    private Diff createDiff(File f1, File f2) throws IOException {
         final StringBuffer firstText = new StringBuffer();
         final StringBuffer secondText = new StringBuffer();
-        if (pattern == null) {
-            try {
-                pattern = Pattern.compile(DIFF_REGEXP);
-            } catch (PatternSyntaxException resex) {
-                throw (IOException)new IOException().initCause(resex);
-            }
-            //firstText = new StringBuffer();
-            //secondText = new StringBuffer();
-        }
         diffCmd = diffCmd.replace("\"{0}\"", "{0}").replace("\"{1}\"", "{1}");  // compatibility // NOI18N
         String firstPath;
         String secondPath;
@@ -201,7 +196,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
                     char[] buffer = new char[BUFF_LENGTH];
                     StringBuilder outBuffer = new StringBuilder();
                     int length;
-                    List<Difference> differences = new ArrayList<Difference>();
+                    Diff differences = new Diff();
                     while ((length = stdout.read(buffer)) > 0) {
                         for (int i = 0; i < length; i++) {
                             if (buffer[i] == '\n') {
@@ -219,7 +214,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
                     if (outBuffer.length() > 0) outputLine(outBuffer.toString(), pattern, differences,
                                                            firstText, secondText);
                     setTextOnLastDifference(differences, firstText, secondText);
-                    ret[0] =  differences.toArray(new Difference[differences.size()]);
+                    ret[0] =  differences;
                 } catch (IOException ioex) {
                     ret[0] = new IOException(Bundle.CmdlineDiffProvider_runtimeError(cmd)).initCause(ioex);
                 }
@@ -234,7 +229,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
                 if (ret[0] instanceof IOException) {
                     throw (IOException) ret[0];
                 }
-                return (Difference[]) ret[0];
+                return (Diff) ret[0];
             }
         } catch (InterruptedException e) {
             synchronized(p[0]) {

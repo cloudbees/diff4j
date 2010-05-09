@@ -39,13 +39,14 @@
  * made subject to such option by the copyright holder.
  */
 
-package com.infradna.diff;
+package com.infradna.diff.provider;
 
-import java.io.BufferedReader;
+import com.infradna.diff.Bundle;
+import com.infradna.diff.Diff;
+import com.infradna.diff.Difference;
+
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -85,21 +86,10 @@ public class BuiltInDiffProvider extends DiffProvider implements java.io.Seriali
      * @return the list of differences found, instances of {@link Difference};
      *        or <code>null</code> when some error occured.
      */
-    public Difference[] computeDiff(Reader r1, Reader r2) throws IOException {
-        return HuntDiff.diff(getLines(r1), getLines(r2), trimLines);   
+    public Diff computeDiff(Reader r1, Reader r2) throws IOException {
+        return Diff.diff(r1, r2, trimLines);
     }
     
-    private String[] getLines(Reader r) throws IOException {
-        BufferedReader br = new BufferedReader(r);
-        String line;
-        List<String> lines = new ArrayList<String>();
-        while ((line = br.readLine()) != null) {
-            lines.add(line);
-        }
-        return lines.toArray(new String[0]);
-    }
-
-
     /** On true all lines are trimmed before passing to diff engine. */
     public boolean isTrimLines() {
         return this.trimLines;

@@ -24,8 +24,7 @@
     </dependency>
   </dependencies>
 
-  <name>Diff/Patch code from Eclipse</name>
-  <description>Extensible application-specific access modifiers for Java</description>
+  <name>Diff/Patch from NetBeans</name>
 
   <repositories>
     <repository>
@@ -101,13 +100,6 @@
     <connection>scm:git:git@github.com:kohsuke/access-modifier.git</connection>
   </scm-->
 
-  <developers>
-    <developer>
-      <id>kohsuke</id>
-      <name>Kohsuke Kawaguchi</name>
-    </developer>
-  </developers>
-
   <reporting>
     <plugins>
       <plugin>
@@ -116,4 +108,12 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <licenses>
+    <license>
+      <name>CDDL</name>
+      <url>http://www.opensource.org/licenses/cddl1.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 </project>

@@ -2,17 +2,17 @@ package com.infradna.diff;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 
-public class TextDiffInfo {
+class TextDiffInfo {
     private String name1;
     private String name2;
 
-
     private Reader r1;
     private Reader r2;
-    private Difference[] diffs;
+    private List<Difference> diffs;
 
-    public TextDiffInfo(String name1, String name2, Reader r1, Reader r2, Difference[] diffs) {
+    public TextDiffInfo(String name1, String name2, Reader r1, Reader r2, List<Difference> diffs) {
         this.name1 = name1;
         this.name2 = name2;
         this.r1 = r1;
@@ -36,7 +36,7 @@ public class TextDiffInfo {
         return r2;
     }
 
-    public Difference[] getDifferences() {
+    public List<Difference> getDifferences() {
         return diffs;
     }
 
@@ -46,9 +46,5 @@ public class TextDiffInfo {
      */
     public String toUnifiedDiffText(int numContextLine) throws IOException {
         return new UnifiedDiff(this, numContextLine).computeDiff();
-    }
-
-    public String toUnifiedDiffText() throws IOException {
-        return toUnifiedDiffText(3);
     }
 }

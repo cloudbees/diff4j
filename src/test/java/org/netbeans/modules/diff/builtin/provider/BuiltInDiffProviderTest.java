@@ -46,8 +46,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
-import com.infradna.diff.BuiltInDiffProvider;
-import com.infradna.diff.DiffProvider;
+import com.infradna.diff.provider.BuiltInDiffProvider;
+import com.infradna.diff.Diff;
+import com.infradna.diff.provider.DiffProvider;
 import com.infradna.diff.Difference;
 import junit.framework.TestCase;
 
@@ -76,7 +77,7 @@ public class BuiltInDiffProviderTest extends TestCase {
         provider.setTrimLines(false);
         return provider;
         // Use CmdlineDiffProvider as a reference to check the test is O.K.
-        //return com.infradna.diff.CmdlineDiffProvider.createDefault();
+        //return com.infradna.diff.provider.CmdlineDiffProvider.createDefault();
     }
     
     // A simple ADD difference
@@ -96,11 +97,11 @@ public class BuiltInDiffProviderTest extends TestCase {
                 }
             }
             String s2 = linesToString(simple2add);
-            Difference[] diff = bdp.computeDiff(new StringReader(s1),
+            Diff diff = bdp.computeDiff(new StringReader(s1),
                                                 new StringReader(s2));
-            assertEquals("WAS COMPARING:\n"+s1+"WITH:\n"+s2, 1, diff.length);
+            assertEquals("WAS COMPARING:\n"+s1+"WITH:\n"+s2, 1, diff.size());
             String rightDiff = "Difference(ADD, "+i+", "+0+", "+(i+1)+", "+(i+1)+")";
-            assertEquals(diff[0].toString()+" != "+rightDiff+"\nWAS COMPARING:\n"+s1+"WITH:\n"+s2, rightDiff, diff[0].toString());
+            assertEquals(diff.get(0).toString()+" != "+rightDiff+"\nWAS COMPARING:\n"+s1+"WITH:\n"+s2, rightDiff, diff.get(0).toString());
         }
     }
     
@@ -118,11 +119,11 @@ public class BuiltInDiffProviderTest extends TestCase {
                 }
             }
             String s2 = linesToString(simple2delete);
-            Difference[] diff = bdp.computeDiff(new StringReader(s1),
+            Diff diff = bdp.computeDiff(new StringReader(s1),
                                                 new StringReader(s2));
-            assertEquals("WAS COMPARING:\n"+s1+"WITH:\n"+s2, 1, diff.length);
+            assertEquals("WAS COMPARING:\n"+s1+"WITH:\n"+s2, 1, diff.size());
             String rightDiff = "Difference(DELETE, "+(i+1)+", "+(i+1)+", "+i+", "+0+")";
-            assertEquals(diff[0].toString()+" != "+rightDiff+"\nWAS COMPARING:\n"+s1+"WITH:\n"+s2, rightDiff, diff[0].toString());
+            assertEquals(diff.get(0).toString()+" != "+rightDiff+"\nWAS COMPARING:\n"+s1+"WITH:\n"+s2, rightDiff, diff.get(0).toString());
         }
     }
     
@@ -142,11 +143,11 @@ public class BuiltInDiffProviderTest extends TestCase {
                 }
             }
             String s2 = linesToString(simple2delete);
-            Difference[] diff = bdp.computeDiff(new StringReader(s1),
+            Diff diff = bdp.computeDiff(new StringReader(s1),
                                                 new StringReader(s2));
-            assertEquals("WAS COMPARING:\n"+s1+"WITH:\n"+s2, 1, diff.length);
+            assertEquals("WAS COMPARING:\n"+s1+"WITH:\n"+s2, 1, diff.size());
             String rightDiff = "Difference(CHANGE, "+(i+1)+", "+(i+1)+", "+(i+1)+", "+(i+1)+")";
-            assertEquals(diff[0].toString()+" != "+rightDiff+"\nWAS COMPARING:\n"+s1+"WITH:\n"+s2, rightDiff, diff[0].toString());
+            assertEquals(diff.get(0).toString()+" != "+rightDiff+"\nWAS COMPARING:\n"+s1+"WITH:\n"+s2, rightDiff, diff.get(0).toString());
         }
     }
     
@@ -154,7 +155,7 @@ public class BuiltInDiffProviderTest extends TestCase {
         BufferedReader r1 = newReader("DiffTestFile1a.txt");
         BufferedReader r2 = newReader("DiffTestFile1b.txt");
         DiffProvider bdp = createDiffProvider();
-        Difference[] diff = bdp.computeDiff(r1, r2);
+        Diff diff = bdp.computeDiff(r1, r2);
         BufferedReader differences = newReader("DiffTestFile1d.txt");
         assertTrue(checkDifferences(diff, differences));
     }
@@ -169,7 +170,7 @@ public class BuiltInDiffProviderTest extends TestCase {
         BufferedReader r1 = newReader("DiffTestFile2a.txt");
         BufferedReader r2 = newReader("DiffTestFile2b.txt");
         DiffProvider bdp = createDiffProvider();
-        Difference[] diff = bdp.computeDiff(r1, r2);
+        Diff diff = bdp.computeDiff(r1, r2);
         BufferedReader differences = newReader("DiffTestFile2d.txt");
         assertTrue(checkDifferences(diff, differences));
     }
@@ -184,7 +185,7 @@ public class BuiltInDiffProviderTest extends TestCase {
         return sb1.toString();
     }
     
-    private static boolean checkDifferences(Difference[] diffs, BufferedReader differences) throws IOException {
+    private static boolean checkDifferences(Diff diffs, BufferedReader differences) throws IOException {
         int i = 0;
         String diffLine;
         
@@ -207,11 +208,12 @@ public class BuiltInDiffProviderTest extends TestCase {
                 if (from1 != 0 || from2 != 0) {
                     if (text1.length() == 0) text1 = null;
                     if (text2.length() == 0) text2 = null;
-                    assertEquals("Type of difference "+i+" does not match.", type, diffs[i].getType());
-                    assertEquals("First start of difference "+i+" does not match.", from1, diffs[i].getFirstStart());
-                    assertEquals("First end of difference "+i+" does not match.", end1, diffs[i].getFirstEnd());
-                    assertEquals("Second start of difference "+i+" does not match.", from2, diffs[i].getSecondStart());
-                    assertEquals("Second end of difference "+i+" does not match.", end2, diffs[i].getSecondEnd());
+                    Difference cur = diffs.get(i);
+                    assertEquals("Type of difference "+i+" does not match.", type, cur.getType());
+                    assertEquals("First start of difference "+i+" does not match.", from1, cur.getFirstStart());
+                    assertEquals("First end of difference "+i+" does not match.", end1, cur.getFirstEnd());
+                    assertEquals("Second start of difference "+i+" does not match.", from2, cur.getSecondStart());
+                    assertEquals("Second end of difference "+i+" does not match.", end2, cur.getSecondEnd());
                     //assertEquals("First text of difference "+i+" does not match\nExpected:\n"+text1+"\nWas:\n"+diffs[i].getFirstText()+"\n", text1, diffs[i].getFirstText());
                     //assertEquals("Second text of difference "+i+" does not match\nExpected:\n"+text2+"\nWas:\n"+diffs[i].getSecondText()+"\n", text2, diffs[i].getSecondText());
                     i++;
@@ -265,14 +267,15 @@ public class BuiltInDiffProviderTest extends TestCase {
         }
         if (text1.length() == 0) text1 = null;
         if (text2.length() == 0) text2 = null;
-        assertEquals("Type of difference "+i+" does not match.", type, diffs[i].getType());
-        assertEquals("First start of difference "+i+" does not match.", from1, diffs[i].getFirstStart());
-        assertEquals("First end of difference "+i+" does not match.", end1, diffs[i].getFirstEnd());
-        assertEquals("Second start of difference "+i+" does not match.", from2, diffs[i].getSecondStart());
-        assertEquals("Second end of difference "+i+" does not match.", end2, diffs[i].getSecondEnd());
+        Difference cur = diffs.get(i);
+        assertEquals("Type of difference "+i+" does not match.", type, cur.getType());
+        assertEquals("First start of difference "+i+" does not match.", from1, cur.getFirstStart());
+        assertEquals("First end of difference "+i+" does not match.", end1, cur.getFirstEnd());
+        assertEquals("Second start of difference "+i+" does not match.", from2, cur.getSecondStart());
+        assertEquals("Second end of difference "+i+" does not match.", end2, cur.getSecondEnd());
         //assertEquals("First text of difference "+i+" does not match.\nExpected:\n"+text1+"\nWas:\n"+diffs[i].getFirstText()+"\n", text1, diffs[i].getFirstText());
         //assertEquals("Second text of difference "+i+" does not match\nExpected:\n"+text2+"\nWas:\n"+diffs[i].getSecondText()+"\n", text2, diffs[i].getSecondText());
         i++;
-        return i == diffs.length;
+        return i == diffs.size();
     }
 }
