@@ -66,7 +66,7 @@ public class UnifiedDiffTest extends TestCase {
 
     protected void setUp() throws Exception {
         //data.root.dir defined in project.properties
-        dataRootDir = new File(System.getProperty("data.root.dir"));
+        dataRootDir = new File(getClass().getResource("/data/unidiff/1.txt").getPath()).getParentFile().getParentFile();
         diffProvider = new BuiltInDiffProvider();
         diffProvider.setTrimLines(false);
         initPermutations();
