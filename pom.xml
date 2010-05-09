@@ -46,7 +46,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <fileMask>Messages.properties</fileMask>
+              <fileMask>Bundle.properties</fileMask>
               <outputDirectory>target/generated-sources/localizer</outputDirectory>
             </configuration>
           </execution>
