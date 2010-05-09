@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file:$TEMPLATE$/$PROJECT_DIR$/Netbeans.iml" filepath="$PROJECT_DIR$/Netbeans.iml" />
-    </modules>
-  </component>
-</project>
-
