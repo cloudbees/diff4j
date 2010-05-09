@@ -50,7 +50,7 @@
       <plugin>
         <groupId>org.jvnet.localizer</groupId>
         <artifactId>maven-localizer-plugin</artifactId>
-        <version>1.12-SNAPSHOT</version>
+        <version>1.12</version>
         <executions>
           <execution>
             <goals>
