@@ -24,7 +24,7 @@
  * Contributor(s):
  *
  * The Original Software is NetBeans. The Initial Developer of the Original
- * Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
+ * Software is Sun Microsystems, Inc. Portions Copyright 1997-2007 Sun
  * Microsystems, Inc. All Rights Reserved.
  *
  * If you wish your version of this file to be governed by only the CDDL
@@ -38,47 +38,22 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
+package com.infradna.diff;
 
-package org.netbeans.api.diff;
-
-import java.io.IOException;
-import java.io.Reader;
-
-//import org.openide.util.Lookup;
-
-import org.netbeans.api.diff.Difference;
-import org.netbeans.modules.diff.builtin.provider.Bundle;
+import java.util.*;
 
 /**
- * This class represents a provider of diff algorithm. The implementing class
- * should calculate differences between two sources.
- * <p>The registered Diff Providers can be obtained via {@link org.openide.util.Lookup}
- * (e.g. you can get the default diff provider by
- *  <code>Lookup.getDefault().lookup(DiffProvider.class)</code>)
+ * One unidiff or context hunk.
  *
- * @author  Martin Entlicher
+ * @author Maros Sandor
  */
-public abstract class DiffProvider extends Object {
-    public abstract String getDisplayName();
-
-    /**
-     * Get a short description of this diff provider.
-     */
-    public abstract String getShortDescription();
-
-    /*
-    public static DiffProvider getDefault() {
-        return (DiffProvider) Lookup.getDefault().lookup(DiffProvider.class);
-    }
-     */
-
-    /**
-     * Create the differences of the content two streams.
-     * @param r1 the first source
-     * @param r2 the second source to be compared with the first one.
-     * @return the list of differences found, instances of {@link Difference};
-     *         or <code>null</code> when some error occured.
-     * @throws IOException when the reading from input streams fails.
-     */
-    public abstract Difference[] computeDiff(Reader r1, Reader r2) throws IOException;
+public final class Hunk {
+    
+    public static final String ENDING_NEWLINE = "\\ No newline at end of file";
+    
+    public int baseStart;
+    public int baseCount;
+    public int modifiedStart; 
+    public int modifiedCount;
+    public List<String> lines = new ArrayList<String>(); 
 }

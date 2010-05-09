@@ -38,10 +38,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-package org.netbeans.modules.diff.builtin.visualizer;
-
-import org.netbeans.api.diff.Difference;
-import org.netbeans.modules.diff.builtin.Hunk;
+package com.infradna.diff;
 
 import java.io.*;
 

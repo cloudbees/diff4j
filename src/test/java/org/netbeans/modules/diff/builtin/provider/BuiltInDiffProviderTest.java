@@ -46,9 +46,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
+import com.infradna.diff.BuiltInDiffProvider;
+import com.infradna.diff.DiffProvider;
+import com.infradna.diff.Difference;
 import junit.framework.TestCase;
-import org.netbeans.api.diff.DiffProvider;
-import org.netbeans.api.diff.Difference;
 
 /**
  * The test of the built-in diff provider
@@ -75,7 +76,7 @@ public class BuiltInDiffProviderTest extends TestCase {
         provider.setTrimLines(false);
         return provider;
         // Use CmdlineDiffProvider as a reference to check the test is O.K.
-        //return org.netbeans.modules.diff.cmdline.CmdlineDiffProvider.createDefault();
+        //return com.infradna.diff.CmdlineDiffProvider.createDefault();
     }
     
     // A simple ADD difference

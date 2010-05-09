@@ -39,7 +39,7 @@
  * made subject to such option by the copyright holder.
  */
 
-package org.netbeans.api.diff;
+package com.infradna.diff;
 
 import java.io.Serializable;
 

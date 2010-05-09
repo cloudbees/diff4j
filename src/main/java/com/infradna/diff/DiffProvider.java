@@ -39,83 +39,44 @@
  * made subject to such option by the copyright holder.
  */
 
-package org.netbeans.modules.diff.builtin.provider;
+package com.infradna.diff;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.netbeans.api.diff.Difference;
-import org.netbeans.api.diff.DiffProvider;
+//import org.openide.util.Lookup;
+
 
 /**
+ * This class represents a provider of diff algorithm. The implementing class
+ * should calculate differences between two sources.
+ * <p>The registered Diff Providers can be obtained via {@link org.openide.util.Lookup}
+ * (e.g. you can get the default diff provider by
+ *  <code>Lookup.getDefault().lookup(DiffProvider.class)</code>)
  *
  * @author  Martin Entlicher
  */
-public class BuiltInDiffProvider extends DiffProvider implements java.io.Serializable {
+public abstract class DiffProvider extends Object {
+    public abstract String getDisplayName();
 
-    /**
-     * Holds value of property trimLines.
-     */
-    private boolean trimLines = true;
-
-    static final long serialVersionUID = 1L;
-
-    /** Creates a new instance of BuiltInDiffProvider */
-    public BuiltInDiffProvider() {
-    }
-    
-    /**
-     * Get the display name of this diff provider.
-     */
-    public String getDisplayName() {
-        return Bundle.BuiltInDiffProvider_displayName();
-    }
-    
     /**
      * Get a short description of this diff provider.
      */
-    public String getShortDescription() {
-        return Bundle.BuiltInDiffProvider_shortDescription();
+    public abstract String getShortDescription();
+
+    /*
+    public static DiffProvider getDefault() {
+        return (DiffProvider) Lookup.getDefault().lookup(DiffProvider.class);
     }
-    
+     */
+
     /**
      * Create the differences of the content two streams.
      * @param r1 the first source
      * @param r2 the second source to be compared with the first one.
      * @return the list of differences found, instances of {@link Difference};
-     *        or <code>null</code> when some error occured.
+     *         or <code>null</code> when some error occured.
+     * @throws IOException when the reading from input streams fails.
      */
-    public Difference[] computeDiff(Reader r1, Reader r2) throws IOException {
-        return HuntDiff.diff(getLines(r1), getLines(r2), trimLines);   
-    }
-    
-    private String[] getLines(Reader r) throws IOException {
-        BufferedReader br = new BufferedReader(r);
-        String line;
-        List<String> lines = new ArrayList<String>();
-        while ((line = br.readLine()) != null) {
-            lines.add(line);
-        }
-        return lines.toArray(new String[0]);
-    }
-
-
-    /** On true all lines are trimmed before passing to diff engine. */
-    public boolean isTrimLines() {
-        return this.trimLines;
-    }
-
-    /**
-     * Setter for property trimLines.
-     * @param trimLines New value of property trimLines.
-     */
-    public void setTrimLines(boolean trimLines) {
-        this.trimLines = trimLines;
-    }
-
-
-    
+    public abstract Difference[] computeDiff(Reader r1, Reader r2) throws IOException;
 }

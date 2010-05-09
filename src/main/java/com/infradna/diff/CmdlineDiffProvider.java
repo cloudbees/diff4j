@@ -39,7 +39,7 @@
  * made subject to such option by the copyright holder.
  */
 
-package org.netbeans.modules.diff.cmdline;
+package com.infradna.diff;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -47,9 +47,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import org.netbeans.api.diff.DiffProvider;
-import org.netbeans.api.diff.Difference;
 
 /**
  * The parser of an external diff utility compatible with Unix diff output.
@@ -124,14 +121,14 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
      * Get the display name of this diff provider.
      */
     public String getDisplayName() {
-        return Bundle.displayName();
+        return Bundle.CmdlineDiffProvider_displayName();
     }
     
     /**
      * Get a short description of this diff provider.
      */
     public String getShortDescription() {
-        return Bundle.shortDescription();
+        return Bundle.CmdlineDiffProvider_shortDescription();
     }
 
     /**
@@ -224,7 +221,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
                     setTextOnLastDifference(differences, firstText, secondText);
                     ret[0] =  differences.toArray(new Difference[differences.size()]);
                 } catch (IOException ioex) {
-                    ret[0] = new IOException(Bundle.runtimeError(cmd)).initCause(ioex);
+                    ret[0] = new IOException(Bundle.CmdlineDiffProvider_runtimeError(cmd)).initCause(ioex);
                 }
             }
         };

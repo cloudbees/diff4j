@@ -39,7 +39,7 @@
  * made subject to such option by the copyright holder.
  */
 
-package org.netbeans.modules.diff.builtin;
+package com.infradna.diff;
 
 import java.io.BufferedReader;
 import java.io.PushbackReader;
@@ -51,10 +51,6 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import org.netbeans.api.diff.Difference;
-
-import org.netbeans.modules.diff.cmdline.CmdlineDiffProvider;
 
 /**
  * Utility class for patch application.

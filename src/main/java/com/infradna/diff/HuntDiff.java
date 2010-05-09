@@ -39,13 +39,14 @@
  * made subject to such option by the copyright holder.
  */
 
-package org.netbeans.modules.diff.builtin.provider;
+package com.infradna.diff;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import org.netbeans.api.diff.Difference;
+
+import com.infradna.diff.Difference;
 
 
 public class HuntDiff {

@@ -1,6 +1,4 @@
-package org.netbeans.modules.diff.builtin.visualizer;
-
-import org.netbeans.api.diff.Difference;
+package com.infradna.diff;
 
 import java.io.IOException;
 import java.io.Reader;

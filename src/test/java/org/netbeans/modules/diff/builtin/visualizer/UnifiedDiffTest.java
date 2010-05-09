@@ -40,13 +40,14 @@
  */
 package org.netbeans.modules.diff.builtin.visualizer;
 
+import com.infradna.diff.BuiltInDiffProvider;
+import com.infradna.diff.Difference;
+import com.infradna.diff.TextDiffInfo;
 import junit.framework.TestCase;
 
 import java.io.*;
 
 import junit.framework.TestSuite;
-import org.netbeans.api.diff.Difference;
-import org.netbeans.modules.diff.builtin.provider.BuiltInDiffProvider;
 
 /**
  * Takes all files from a directory and compares them all with each other comparing results with external diff engine. 
@@ -122,7 +123,7 @@ public class UnifiedDiffTest extends TestCase {
     private String getInternalDiff(File[] toDiff) throws IOException {
         Reader r1 = new FileReader(toDiff[0]);
         Reader r2 = new FileReader(toDiff[1]);
-        Difference [] diffs = diffProvider.computeDiff(r1, r2);
+        Difference[] diffs = diffProvider.computeDiff(r1, r2);
         r1.close();
         r2.close();
         r1 = new FileReader(toDiff[0]);
