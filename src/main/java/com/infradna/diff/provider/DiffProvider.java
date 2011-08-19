@@ -58,13 +58,6 @@ import java.io.Reader;
  * @author  Martin Entlicher
  */
 public abstract class DiffProvider extends Object {
-    public abstract String getDisplayName();
-
-    /**
-     * Get a short description of this diff provider.
-     */
-    public abstract String getShortDescription();
-
     /**
      * Create the differences of the content two streams.
      * @param r1 the first source

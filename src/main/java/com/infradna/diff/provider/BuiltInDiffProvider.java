@@ -41,9 +41,9 @@
 
 package com.infradna.diff.provider;
 
-import com.infradna.diff.Bundle;
 import com.infradna.diff.Diff;
 import com.infradna.diff.Difference;
+import sun.jkernel.Bundle;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -63,20 +63,6 @@ public class BuiltInDiffProvider extends DiffProvider implements java.io.Seriali
 
     /** Creates a new instance of BuiltInDiffProvider */
     public BuiltInDiffProvider() {
-    }
-    
-    /**
-     * Get the display name of this diff provider.
-     */
-    public String getDisplayName() {
-        return Bundle.BuiltInDiffProvider_displayName();
-    }
-    
-    /**
-     * Get a short description of this diff provider.
-     */
-    public String getShortDescription() {
-        return Bundle.BuiltInDiffProvider_shortDescription();
     }
     
     /**

@@ -41,9 +41,9 @@
 
 package com.infradna.diff.provider;
 
-import com.infradna.diff.Bundle;
 import com.infradna.diff.Diff;
 import com.infradna.diff.Difference;
+import sun.jkernel.Bundle;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -119,20 +119,6 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
             return true;
         }
         return false;
-    }
-
-    /**
-     * Get the display name of this diff provider.
-     */
-    public String getDisplayName() {
-        return Bundle.CmdlineDiffProvider_displayName();
-    }
-    
-    /**
-     * Get a short description of this diff provider.
-     */
-    public String getShortDescription() {
-        return Bundle.CmdlineDiffProvider_shortDescription();
     }
 
     /**
@@ -216,7 +202,7 @@ public class CmdlineDiffProvider extends DiffProvider implements java.io.Seriali
                     setTextOnLastDifference(differences, firstText, secondText);
                     ret[0] =  differences;
                 } catch (IOException ioex) {
-                    ret[0] = new IOException(Bundle.CmdlineDiffProvider_runtimeError(cmd)).initCause(ioex);
+                    ret[0] = new IOException("Failed to execute: "+cmd).initCause(ioex);
                 }
             }
         };

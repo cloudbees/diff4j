@@ -585,7 +585,9 @@ public final class ContextualPatch {
             base = base.substring(2);
         }
         int pathEndIdx = base.indexOf('\t');
-        patch.targetPath = base.substring(0, pathEndIdx).trim();
+        if (pathEndIdx>0)
+            base = base.substring(0, pathEndIdx);
+        patch.targetPath = base.trim();
     }
 
     private void parseRange(Hunk hunk, String range) throws PatchException {
