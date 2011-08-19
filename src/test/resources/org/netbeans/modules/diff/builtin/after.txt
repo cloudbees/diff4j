@@ -3,7 +3,6 @@ package org.netbeans.modules.diff.builtin;
 import com.infradna.diff.ContextualPatch;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 
@@ -20,7 +19,5 @@ public class PatchTest extends TestCase {
 
         ContextualPatch patch = ContextualPatch.create(p, b);
         patch.patch(false);
-
-        assertEquals(IOUtils.toString(getClass().getResourceAsStream("after.txt")), FileUtils.readFileToString(b));
     }
 }
