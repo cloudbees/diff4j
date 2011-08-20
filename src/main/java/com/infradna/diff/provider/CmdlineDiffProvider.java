@@ -43,7 +43,6 @@ package com.infradna.diff.provider;
 
 import com.infradna.diff.Diff;
 import com.infradna.diff.Difference;
-import sun.jkernel.Bundle;
 
 import java.io.File;
 import java.io.FileWriter;
