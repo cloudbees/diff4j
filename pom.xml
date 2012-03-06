@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cloudbees</groupId>
   <artifactId>diff4j</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <name>Pure Java implementation of diff/patch</name>
   <description>Repackaged the code from NetBeans</description>
