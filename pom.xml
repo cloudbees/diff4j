@@ -87,6 +87,7 @@
  
   <scm>
     <connection>scm:git:git@github.com:cloudbees/diff4j.git</connection>
+    <developerConnection>scm:git:git@github.com:cloudbees/diff4j.git</developerConnection>
   </scm>
 
   <reporting>
