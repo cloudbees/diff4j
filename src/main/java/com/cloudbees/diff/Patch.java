@@ -39,9 +39,9 @@
  * made subject to such option by the copyright holder.
  */
 
-package com.infradna.diff;
+package com.cloudbees.diff;
 
-import com.infradna.diff.provider.CmdlineDiffProvider;
+import com.cloudbees.diff.provider.CmdlineDiffProvider;
 
 import java.io.BufferedReader;
 import java.io.PushbackReader;

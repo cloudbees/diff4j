@@ -1,4 +1,4 @@
-package com.infradna.diff;
+package com.cloudbees.diff;
 
 import org.apache.commons.io.IOUtils;
 

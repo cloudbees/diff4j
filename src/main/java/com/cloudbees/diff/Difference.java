@@ -39,7 +39,7 @@
  * made subject to such option by the copyright holder.
  */
 
-package com.infradna.diff;
+package com.cloudbees.diff;
 
 import java.io.Serializable;
 

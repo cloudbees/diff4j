@@ -39,10 +39,10 @@
  * made subject to such option by the copyright holder.
  */
 
-package com.infradna.diff.provider;
+package com.cloudbees.diff.provider;
 
-import com.infradna.diff.Diff;
-import com.infradna.diff.Difference;
+import com.cloudbees.diff.Diff;
+import com.cloudbees.diff.Difference;
 
 import java.io.File;
 import java.io.FileWriter;

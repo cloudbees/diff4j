@@ -24,7 +24,7 @@
  * Contributor(s):
  *
  * The Original Software is NetBeans. The Initial Developer of the Original
- * Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
+ * Software is Sun Microsystems, Inc. Portions Copyright 1997-2007 Sun
  * Microsystems, Inc. All Rights Reserved.
  *
  * If you wish your version of this file to be governed by only the CDDL
@@ -38,32 +38,16 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-
-package com.infradna.diff.provider;
-
-import com.infradna.diff.Diff;
-import com.infradna.diff.Difference;
-
-import java.io.IOException;
-import java.io.Reader;
-
+package com.cloudbees.diff;
 
 /**
- * This class represents a provider of diff algorithm. The implementing class
- * should calculate differences between two sources.
- * <p>The registered Diff Providers can be obtained via {@link org.openide.util.Lookup}
- * (e.g. you can get the default diff provider by
- *  <code>Lookup.getDefault().lookup(DiffProvider.class)</code>)
+ * The patch is invalid or cannot be applied on the specified file.
  *
- * @author  Martin Entlicher
+ * @author Maros Sandor
  */
-public abstract class DiffProvider extends Object {
-    /**
-     * Create the differences of the content two streams.
-     * @param r1 the first source
-     * @param r2 the second source to be compared with the first one.
-     * @return the list of differences found, instances of {@link Difference};
-     * @throws IOException when the reading from input streams fails.
-     */
-    public abstract Diff computeDiff(Reader r1, Reader r2) throws IOException;
+public final class PatchException extends Exception {
+
+    public PatchException(String msg) {
+        super(msg);
+    }
 }

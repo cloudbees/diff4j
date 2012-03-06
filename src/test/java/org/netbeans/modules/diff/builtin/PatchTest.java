@@ -1,7 +1,7 @@
 package org.netbeans.modules.diff.builtin;
 
-import com.infradna.diff.ContextualPatch;
-import com.infradna.diff.ContextualPatch.PatchReport;
+import com.cloudbees.diff.ContextualPatch;
+import com.cloudbees.diff.ContextualPatch.PatchReport;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

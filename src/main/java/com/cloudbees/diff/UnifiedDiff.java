@@ -38,7 +38,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-package com.infradna.diff;
+package com.cloudbees.diff;
 
 import org.apache.commons.io.IOUtils;
 

@@ -40,8 +40,8 @@
  */
 package org.netbeans.modules.diff.builtin.visualizer;
 
-import com.infradna.diff.provider.BuiltInDiffProvider;
-import com.infradna.diff.Diff;
+import com.cloudbees.diff.provider.BuiltInDiffProvider;
+import com.cloudbees.diff.Diff;
 import junit.framework.TestCase;
 
 import java.io.*;

@@ -24,7 +24,7 @@
  * Contributor(s):
  *
  * The Original Software is NetBeans. The Initial Developer of the Original
- * Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
+ * Software is Sun Microsystems, Inc. Portions Copyright 1997-2007 Sun
  * Microsystems, Inc. All Rights Reserved.
  *
  * If you wish your version of this file to be governed by only the CDDL
@@ -38,56 +38,63 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
+package com.cloudbees.diff;
 
-package com.infradna.diff.provider;
-
-import com.infradna.diff.Diff;
-import com.infradna.diff.Difference;
-
-import java.io.IOException;
-import java.io.Reader;
+import java.io.ByteArrayOutputStream;
+import java.util.*;
 
 /**
+ * Base64 utility methods.
  *
- * @author  Martin Entlicher
+ * @author Maros Sandor
  */
-public class BuiltInDiffProvider extends DiffProvider implements java.io.Serializable {
-
-    /**
-     * Holds value of property trimLines.
-     */
-    private boolean trimLines = true;
-
-    static final long serialVersionUID = 1L;
-
-    /** Creates a new instance of BuiltInDiffProvider */
-    public BuiltInDiffProvider() {
+class Base64 {
+    
+    private Base64() {
     }
     
-    /**
-     * Create the differences of the content two streams.
-     * @param r1 the first source
-     * @param r2 the second source to be compared with the first one.
-     * @return the list of differences found, instances of {@link Difference};
-     *        or <code>null</code> when some error occured.
-     */
-    public Diff computeDiff(Reader r1, Reader r2) throws IOException {
-        return Diff.diff(r1, r2, trimLines);
+    public static byte [] decode(List<String> ls) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        for (String s : ls) {
+            decode(s, bos);
+        }
+        return bos.toByteArray();
     }
-    
-    /** On true all lines are trimmed before passing to diff engine. */
-    public boolean isTrimLines() {
-        return this.trimLines;
+  
+    private static void decode(String s, ByteArrayOutputStream bos) {
+        int i = 0;
+        int len = s.length();
+        while (true) {
+            while (i < len && s.charAt(i) <= ' ') i++;
+            if (i == len) break;
+            int tri = (decode(s.charAt(i)) << 18)
+            + (decode(s.charAt(i+1)) << 12)
+            + (decode(s.charAt(i+2)) << 6)
+            + (decode(s.charAt(i+3)));
+          
+            bos.write((tri >> 16) & 255);
+            if (s.charAt(i+2) == '=') break;
+            bos.write((tri >> 8) & 255);
+            if (s.charAt(i+3) == '=') break;
+            bos.write(tri & 255);
+          
+            i += 4;
+        }
     }
 
-    /**
-     * Setter for property trimLines.
-     * @param trimLines New value of property trimLines.
-     */
-    public void setTrimLines(boolean trimLines) {
-        this.trimLines = trimLines;
+    private static int decode(char c) {
+        if (c >= 'A' && c <= 'Z') return ((int) c) - 65;
+        else if (c >= 'a' && c <= 'z') return ((int) c) - 97 + 26;
+        else if (c >= '0' && c <= '9') return ((int) c) - 48 + 26 + 26;
+        else {
+            switch (c) {
+                case '+': return 62;
+                case '/': return 63;
+                case '=': return 0;
+                default:
+                    throw new RuntimeException("unexpected code: " + c);
+            }
+        }
     }
-
-
     
 }

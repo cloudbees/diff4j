@@ -46,10 +46,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
-import com.infradna.diff.provider.BuiltInDiffProvider;
-import com.infradna.diff.Diff;
-import com.infradna.diff.provider.DiffProvider;
-import com.infradna.diff.Difference;
+import com.cloudbees.diff.provider.BuiltInDiffProvider;
+import com.cloudbees.diff.Diff;
+import com.cloudbees.diff.provider.DiffProvider;
+import com.cloudbees.diff.Difference;
 import junit.framework.TestCase;
 
 /**
@@ -77,7 +77,7 @@ public class BuiltInDiffProviderTest extends TestCase {
         provider.setTrimLines(false);
         return provider;
         // Use CmdlineDiffProvider as a reference to check the test is O.K.
-        //return com.infradna.diff.provider.CmdlineDiffProvider.createDefault();
+        //return com.cloudbees.diff.provider.CmdlineDiffProvider.createDefault();
     }
     
     // A simple ADD difference

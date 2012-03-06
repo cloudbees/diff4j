@@ -24,7 +24,7 @@
  * Contributor(s):
  *
  * The Original Software is NetBeans. The Initial Developer of the Original
- * Software is Sun Microsystems, Inc. Portions Copyright 1997-2007 Sun
+ * Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
  * Microsystems, Inc. All Rights Reserved.
  *
  * If you wish your version of this file to be governed by only the CDDL
@@ -38,16 +38,56 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-package com.infradna.diff;
+
+package com.cloudbees.diff.provider;
+
+import com.cloudbees.diff.Diff;
+import com.cloudbees.diff.Difference;
+
+import java.io.IOException;
+import java.io.Reader;
 
 /**
- * The patch is invalid or cannot be applied on the specified file.
  *
- * @author Maros Sandor
+ * @author  Martin Entlicher
  */
-public final class PatchException extends Exception {
+public class BuiltInDiffProvider extends DiffProvider implements java.io.Serializable {
 
-    public PatchException(String msg) {
-        super(msg);
+    /**
+     * Holds value of property trimLines.
+     */
+    private boolean trimLines = true;
+
+    static final long serialVersionUID = 1L;
+
+    /** Creates a new instance of BuiltInDiffProvider */
+    public BuiltInDiffProvider() {
     }
+    
+    /**
+     * Create the differences of the content two streams.
+     * @param r1 the first source
+     * @param r2 the second source to be compared with the first one.
+     * @return the list of differences found, instances of {@link Difference};
+     *        or <code>null</code> when some error occured.
+     */
+    public Diff computeDiff(Reader r1, Reader r2) throws IOException {
+        return Diff.diff(r1, r2, trimLines);
+    }
+    
+    /** On true all lines are trimmed before passing to diff engine. */
+    public boolean isTrimLines() {
+        return this.trimLines;
+    }
+
+    /**
+     * Setter for property trimLines.
+     * @param trimLines New value of property trimLines.
+     */
+    public void setTrimLines(boolean trimLines) {
+        this.trimLines = trimLines;
+    }
+
+
+    
 }

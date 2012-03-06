@@ -1,4 +1,4 @@
-package com.infradna.diff;
+package com.cloudbees.diff;
 
 import java.io.IOException;
 import java.io.Reader;
