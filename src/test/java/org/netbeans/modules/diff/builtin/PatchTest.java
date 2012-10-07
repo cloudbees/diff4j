@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class PatchTest extends TestCase {
     public void testPatchOneFile() throws Exception {
-        File p = mktmpdir();
+        File p = File.createTempFile("test", "diff");
         FileUtils.copyURLToFile(getClass().getResource("singleFilePatch.diff"),p);
 
         File b = File.createTempFile("test", "base");
