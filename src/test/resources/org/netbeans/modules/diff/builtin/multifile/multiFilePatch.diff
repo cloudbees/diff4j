@@ -1,0 +1,33 @@
+diff --git a/alpha.txt b/alpha.txt
+index de98044..0f7bc76 100644
+--- a/alpha.txt
++++ b/alpha.txt
+@@ -1,3 +1,2 @@
+ a
+-b
+ c
+diff --git a/bravo.txt b/bravo.txt
+index 04ec35a..a470291 100644
+--- a/bravo.txt
++++ b/bravo.txt
+@@ -1,3 +1,4 @@
+ x
+ y
+ z
++w
+diff --git a/charlie.txt b/charlie.txt
+deleted file mode 100644
+index 32f64f4..0000000
+--- a/charlie.txt
++++ /dev/null
+@@ -1 +0,0 @@
+-t
+\ No newline at end of file
+diff --git a/delta.txt b/delta.txt
+new file mode 100644
+index 0000000..3d2667b
+--- /dev/null
++++ b/delta.txt
+@@ -0,0 +1 @@
++delta
+\ No newline at end of file

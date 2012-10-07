@@ -147,9 +147,13 @@ public final class ContextualPatch {
         } else {
             target = new ArrayList<String>();
         }
-        if (!patch.binary) {
-            for (Hunk hunk : patch.hunks) {
-                applyHunk(target, hunk);
+        if (patch.mode==Mode.DELETE) {
+            target = new ArrayList<String>();
+        } else {
+            if (!patch.binary) {
+                for (Hunk hunk : patch.hunks) {
+                    applyHunk(target, hunk);
+                }
             }
         }
         if (!dryRun) {
@@ -189,6 +193,11 @@ public final class ContextualPatch {
     }
 
     private void writeFile(SinglePatch patch, List<String> lines) throws IOException {
+        if (patch.mode==Mode.DELETE) {
+            patch.targetFile.delete();
+            return;
+        }
+
         patch.targetFile.getParentFile().mkdirs();
         if (patch.binary) {
             if (patch.hunks.length == 0) {
@@ -581,13 +590,26 @@ public final class ContextualPatch {
         base = base.substring("+++ ".length());
         modified = modified.substring("--- ".length());
         // first seen in mercurial diffs: base and modified paths are different: base starts with "a/" and modified starts with "b/"
-        if (base.startsWith("a/") && modified.startsWith("b/")) {
-            base = base.substring(2);
+        if ((base.equals("/dev/null") || base.startsWith("a/")) && (modified.equals("/dev/null") || modified.startsWith("b/"))) {
+            if (base.startsWith("a/"))      base = base.substring(2);
+            if (modified.startsWith("b/"))  modified = modified.substring(2);
         }
+        base = untilTab(base).trim();
+        if (base.equals("/dev/null")) {
+            // "/dev/null" in base indicates a new file
+            patch.targetPath = untilTab(modified).trim();
+            patch.mode = Mode.ADD;
+        } else {
+            patch.targetPath = base;
+            patch.mode = modified.equals("/dev/null") ? Mode.DELETE : Mode.CHANGE;
+        }
+    }
+
+    private String untilTab(String base) {
         int pathEndIdx = base.indexOf('\t');
         if (pathEndIdx>0)
             base = base.substring(0, pathEndIdx);
-        patch.targetPath = base.trim();
+        return base;
     }
 
     private void parseRange(Hunk hunk, String range) throws PatchException {
@@ -658,7 +680,7 @@ public final class ContextualPatch {
         return new File(context, patch.targetPath);
     }
 
-    private class SinglePatch {
+    private static class SinglePatch {
         String      targetIndex;
         String      targetPath;
         Hunk []     hunks;
@@ -666,6 +688,16 @@ public final class ContextualPatch {
         File        targetFile;                 // computed later
         boolean     noEndingNewline;            // resulting file should not end with a newline
         boolean     binary;                  // binary patches contain one encoded Hunk
+        Mode        mode;
+    }
+
+    enum Mode {
+        /** Update to existing file */
+        CHANGE,
+        /** Adding a new file */
+        ADD,
+        /** Deleting an existing file */
+        DELETE
     }
 
     public static enum PatchStatus { Patched, Missing, Failure };
