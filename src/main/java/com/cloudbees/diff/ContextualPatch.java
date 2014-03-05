@@ -590,7 +590,7 @@ public final class ContextualPatch {
         base = base.substring("+++ ".length());
         modified = modified.substring("--- ".length());
         // first seen in mercurial diffs: base and modified paths are different: base starts with "a/" and modified starts with "b/"
-        if ((base.equals("/dev/null") || base.startsWith("a/")) && (modified.equals("/dev/null") || modified.startsWith("b/"))) {
+        if ((base.startsWith("/dev/null") || base.startsWith("a/")) && (modified.equals("/dev/null") || modified.startsWith("b/"))) {
             if (base.startsWith("a/"))      base = base.substring(2);
             if (modified.startsWith("b/"))  modified = modified.substring(2);
         }
@@ -601,7 +601,7 @@ public final class ContextualPatch {
             patch.mode = Mode.ADD;
         } else {
             patch.targetPath = base;
-            patch.mode = modified.equals("/dev/null") ? Mode.DELETE : Mode.CHANGE;
+            patch.mode = modified.startsWith("/dev/null") ? Mode.DELETE : Mode.CHANGE;
         }
     }
 
