@@ -45,6 +45,42 @@ public class PatchTest extends TestCase {
         }
         assertFalse(new File(d,"charlie.txt").exists());
     }
+    
+    public void testDeleteOneFileWithTimestampsInDiff() throws Exception {
+        File p = File.createTempFile("test", "diff");
+        FileUtils.copyURLToFile(getClass().getResource("singleFileDeleteWithTimestamp.diff"),p);
+
+        File b = File.createTempFile("test", "base");
+        FileUtils.copyURLToFile(getClass().getResource("simple.txt"),b);
+
+        ContextualPatch patch = ContextualPatch.create(p, b);
+        List<PatchReport> report = patch.patch(false);
+
+        assertTrue(report.size() == 1);
+
+        for (ContextualPatch.PatchReport r : report) {
+            Throwable failure = r.getFailure();
+            if (failure != null)
+            	fail ("Failed to patch " + r.getFile());
+        }
+
+        assertFalse(b.exists());
+    }
+
+    public void testAddOneFileWithTimestampsInDiff() throws Exception {
+        File d = mktmpdir();
+
+        File p = File.createTempFile("test", "diff");
+        FileUtils.copyURLToFile(getClass().getResource("singleFileAddWithTimestamp.diff"),p);
+
+        ContextualPatch patch = ContextualPatch.create(p,d);
+        List<PatchReport> report = patch.patch(false);
+        System.out.println(report);
+
+        File n = new File(d,"simple.txt");
+        assertTrue(n.exists());
+        assertEquals(resourceAsString("simple.txt"), FileUtils.readFileToString(n));
+    }
 
     private String resourceAsString(String name) throws IOException {
         return IOUtils.toString(getClass().getResourceAsStream(name));
