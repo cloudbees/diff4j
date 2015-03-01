@@ -29,7 +29,7 @@ public class PatchTest extends TestCase {
 
     public void testMultiFilePatch() throws Exception {
         File d = mktmpdir();
-        for (String name : "alpha.txt bravo.txt charlie.txt".split(" ")) {
+        for (String name : "alpha.txt bravo.txt charlie.txt multi_add_content.txt multi_remove_content.txt".split(" ")) {
             FileUtils.copyURLToFile(getClass().getResource("multifile/before/"+name),new File(d,name));
         }
 
@@ -40,12 +40,12 @@ public class PatchTest extends TestCase {
         List<PatchReport> report = patch.patch(false);
         System.out.println(report);
 
-        for (String name : "alpha.txt bravo.txt delta.txt".split(" ")) {
+        for (String name : "alpha.txt bravo.txt delta.txt multi_add_content.txt multi_remove_content.txt multi_add_file.txt".split(" ")) {
             assertEquals(resourceAsString("multifile/after/"+name), FileUtils.readFileToString(new File(d,name)));
         }
         assertFalse(new File(d,"charlie.txt").exists());
     }
-    
+
     public void testDeleteOneFileWithTimestampsInDiff() throws Exception {
         File p = File.createTempFile("test", "diff");
         FileUtils.copyURLToFile(getClass().getResource("singleFileDeleteWithTimestamp.diff"),p);
