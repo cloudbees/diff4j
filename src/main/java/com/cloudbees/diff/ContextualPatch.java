@@ -119,7 +119,7 @@ public final class ContextualPatch {
     
     private void init() throws IOException {
         patchReader = new BufferedReader(new FileReader(patchFile));
-        String encoding = "ISO-8859-1";
+        String encoding = "utf8";
         String line = patchReader.readLine();
         if (MAGIC.equals(line)) {
             encoding = "utf8"; // NOI18N
