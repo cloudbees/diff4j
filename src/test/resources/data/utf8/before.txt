@@ -82,21 +82,6 @@ public class PatchTest extends TestCase {
         assertEquals(resourceAsString("simple.txt"), FileUtils.readFileToString(n));
     }
 
-    public void testUtf8Patch() throws Exception { //测试方法
-        File diff = new File(getClass().getResource("/data/utf8/diff.patch").getPath());
-
-        File tmpFile = File.createTempFile("before", "dat");
-        FileUtils.copyURLToFile(getClass().getResource("/data/utf8/before.txt"),tmpFile);
-
-        ContextualPatch patch = ContextualPatch.create(diff,tmpFile);
-        List<PatchReport> reports = patch.patch(false);
-        for (PatchReport r : reports) {
-            if (r.getFailure()!=null)
-                throw new IOException("Failed to patch " + r.getFile(), r.getFailure());
-        }
-        assertEquals(resourceAsString("/data/utf8/after.txt"), FileUtils.readFileToString(tmpFile));
-    }
-
     private String resourceAsString(String name) throws IOException {
         return IOUtils.toString(getClass().getResourceAsStream(name));
     }
