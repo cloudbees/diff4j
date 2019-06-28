@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -82,13 +83,13 @@ public class PatchTest extends TestCase {
         assertEquals(resourceAsString("simple.txt"), FileUtils.readFileToString(n));
     }
 
-    public void testUtf8Patch() throws Exception { //测试方法
+    public void testUtf8Patch() throws Exception {
         File diff = new File(getClass().getResource("/data/utf8/diff.patch").getPath());
 
         File tmpFile = File.createTempFile("before", "dat");
         FileUtils.copyURLToFile(getClass().getResource("/data/utf8/before.txt"),tmpFile);
 
-        ContextualPatch patch = ContextualPatch.create(diff,tmpFile);
+        ContextualPatch patch = ContextualPatch.create(diff,tmpFile, StandardCharsets.UTF_8);
         List<PatchReport> reports = patch.patch(false);
         for (PatchReport r : reports) {
             if (r.getFailure()!=null)

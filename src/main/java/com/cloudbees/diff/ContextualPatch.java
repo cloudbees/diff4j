@@ -43,6 +43,7 @@ package com.cloudbees.diff;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -75,13 +76,26 @@ public final class ContextualPatch {
     private boolean         patchLineRead;
     private int             lastPatchedLine;    // the last line that was successfuly patched
 
+    /**
+     * Encoding of the patch file.
+     *
+     * Null to auto-sniff, based on the {@link #MAGIC} headerline. This is a carry-over from the original
+     * source code that came from NetBeans.
+     */
+    private Charset         encoding;
+
     public static ContextualPatch create(File patchFile, File context) {
-        return new ContextualPatch(patchFile, context); 
+        return create(patchFile,context,null);
     }
     
-    private ContextualPatch(File patchFile, File context) {
+    public static ContextualPatch create(File patchFile, File context, Charset encoding) {
+        return new ContextualPatch(patchFile, context, encoding);
+    }
+
+    private ContextualPatch(File patchFile, File context, Charset encoding) {
         this.patchFile = patchFile;
         this.suggestedContext = context;
+        this.encoding = encoding;
     }
 
     /**
@@ -118,21 +132,27 @@ public final class ContextualPatch {
     }
     
     private void init() throws IOException {
-        patchReader = new BufferedReader(new FileReader(patchFile));
-        String encoding = "utf8";
-        String line = patchReader.readLine();
-        if (MAGIC.equals(line)) {
-            encoding = "utf8"; // NOI18N
-            line = patchReader.readLine();
-        }
-        patchReader.close();
+        if (encoding==null) {
+            /*
+                Auto-sniffing behaviour:
 
-        byte[] buffer = new byte[MAGIC.length()];
-        InputStream in = new FileInputStream(patchFile);
-        int read = in.read(buffer);
-        in.close();
-        if (read != -1 && MAGIC.equals(new String(buffer, "utf8"))) {  // NOI18N
-            encoding = "utf8"; // NOI18N
+                1. look for the MAGIC line in the beginning. If that's present, the file is in UTF-8
+                2. otherwise diff file spec doesn't come with the specification of encoding, so the best
+                   you can do is to use the platform encoding, which I think most closely resembles
+                   the original diff tool's behaviour.
+             */
+
+            Charset UTF8 = Charset.forName("UTF-8");
+
+            byte[] buffer = new byte[MAGIC.length()];
+            InputStream in = new FileInputStream(patchFile);
+            int read = in.read(buffer);
+            in.close();
+            if (read != -1 && MAGIC.equals(new String(buffer, UTF8))) {
+                encoding = UTF8;
+            } else {
+                encoding = Charset.defaultCharset();
+            }
         }
         patchReader = new BufferedReader(new InputStreamReader(new FileInputStream(patchFile), encoding));
     }
