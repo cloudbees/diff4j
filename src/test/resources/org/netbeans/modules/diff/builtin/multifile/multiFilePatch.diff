@@ -31,3 +31,19 @@ index 0000000..3d2667b
 @@ -0,0 +1 @@
 +delta
 \ No newline at end of file
+--- //multi_remove_content.txt	//multi_remove_content.txt
++++ //multi_remove_content.txt	2015-02-26 15:02:55
+@@ -1,2 +1,1 @@
+ ordem
+-progresso
+--- //multi_add_content.txt	//multi_add_content.txt
++++ //multi_add_content.txt	2015-02-26 15:02:55
+@@ -1,2 +1,3 @@
+ ordem
+ progresso
++patria amada
+--- //multi_add_file.txt	//multi_add_file.txt
++++ //multi_add_file.txt	2015-02-26 15:02:55
+@@ -0,0 +1,2 @@
++ordem
++progresso
