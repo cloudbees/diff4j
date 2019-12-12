@@ -119,6 +119,10 @@ public final class ContextualPatch {
             computeContext(patches);
             for (SinglePatch patch : patches) {
                 try {
+                    if (!computeTargetFile(patch).exists()) {
+                        report.add(new PatchReport(patch.targetFile, null, patch.binary, PatchStatus.Missing, null));
+                        continue;
+                    }
                     applyPatch(patch, dryRun);
                     report.add(new PatchReport(patch.targetFile, computeBackup(patch.targetFile), patch.binary, PatchStatus.Patched, null));
                 } catch (Exception e) {
